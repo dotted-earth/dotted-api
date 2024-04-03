@@ -1,6 +1,6 @@
 import { SUPABASE_CHANNELS } from "@utils/constants";
 import { supabaseClient } from "@utils/supabase";
-import { handleNewItineraryCreated } from "src/handlers/itineraries";
+import { handleNewItineraryCreated } from "src/subscription-handlers/itineraries";
 import type { Tables } from "types/database.types";
 
 supabaseClient
