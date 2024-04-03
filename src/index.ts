@@ -1,9 +1,11 @@
-import { Hono } from 'hono'
+import { logger } from "@utils/logger";
+import "@utils/supabase";
+import { Hono } from "hono";
 
-const app = new Hono()
+logger.info(`app starting on PORT: ${Bun.env.PORT}`);
+const app = new Hono();
 
-app.get('/', (c) => {
-  return c.text('Hello Hono!')
-})
-
-export default app
+export default {
+  port: Bun.env.PORT,
+  fetch: app.fetch,
+};
