@@ -1,20 +1,36 @@
+import fs from "node:fs";
 import { createLogger, format, transports } from "winston";
 import "winston-daily-rotate-file";
 
 const { combine, timestamp, printf, colorize, errors, json } = format;
 
-const fileRotateTransport = new transports.DailyRotateFile({
-  filename: "combined-%DATE%.log",
+const logDir = "logs";
+
+if (!fs.existsSync(logDir)) {
+  fs.mkdirSync(logDir);
+}
+
+const appFileRotateTransport = new transports.DailyRotateFile({
+  filename: "%DATE%-app.log",
   datePattern: "YYYY-MM-DD",
-  maxFiles: "14d",
+  maxSize: "20m",
+  maxFiles: "30d",
+  dirname: logDir,
+  zippedArchive: true,
+});
+
+const errorFileRotateTransport = new transports.DailyRotateFile({
+  level: "error",
+  filename: "%DATE%-error.log",
+  datePattern: "YYYY-MM-DD",
+  maxFiles: "30d",
+  dirname: logDir,
+  zippedArchive: true,
 });
 
 export const logger = createLogger({
   level: "info",
-  transports: [
-    new transports.File({ filename: "error.log", level: "error" }),
-    fileRotateTransport,
-  ],
+  transports: [appFileRotateTransport, errorFileRotateTransport],
 });
 
 if (Bun.env.NODE_ENV === "production") {
@@ -30,9 +46,10 @@ if (Bun.env.NODE_ENV === "production") {
         errors({ stack: true }),
         colorize(),
         timestamp(),
-        printf(({ level, message, timestamp }) => {
-          return `[${timestamp}]:${level}: ${message}`;
-        })
+        printf(
+          ({ level, message, timestamp }) =>
+            `[${timestamp}]:${level}: ${message}`
+        )
       ),
     })
   );
