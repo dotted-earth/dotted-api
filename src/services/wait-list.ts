@@ -39,18 +39,18 @@ waitListService.post("join", async (c) => {
 
       return c.json(
         {
-          error: "Bad Request",
-          message: "Bad email",
+          message: "Internal Server Error",
         },
-        400
+        500
       );
     }
   }
 
   return c.json(
     {
-      message: "Internal Server Error",
+      error: "Bad Request",
+      message: "Bad email",
     },
-    500
+    400
   );
 });
