@@ -1,11 +1,7 @@
-To install dependencies:
-```sh
-bun install
-```
+# Dotted API Server
 
-To run:
-```sh
-bun run dev
-```
+The backend for Dotted clients
 
-open http://localhost:3000
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md)
