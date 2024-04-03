@@ -34,11 +34,7 @@ export const logger = createLogger({
 });
 
 if (Bun.env.NODE_ENV === "production") {
-  logger.add(
-    new transports.Console({
-      format: json(),
-    })
-  );
+  logger.add(new transports.Console());
 } else if (Bun.env.NODE_ENV === "development") {
   logger.add(
     new transports.Console({
@@ -47,8 +43,8 @@ if (Bun.env.NODE_ENV === "production") {
         colorize(),
         timestamp(),
         printf(
-          ({ level, message, timestamp }) =>
-            `[${timestamp}]:${level}: ${message}`
+          ({ level, message, timestamp, stack }) =>
+            `[${timestamp}]:${level}: ${message}${stack ? `\n\n${stack}` : ""}`
         )
       ),
     })
