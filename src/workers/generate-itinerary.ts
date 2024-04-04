@@ -1,6 +1,6 @@
 import { logger } from "@utils/logger";
 import Queue from "bee-queue";
-import { Tables } from "types/database.types";
+import type { Tables } from "types/database.types";
 
 type GenerateItineraryJobData = {
   recreations: Tables<"recreations">[];
@@ -25,6 +25,7 @@ generateItineraryQueue.process(
     logger.info(`Job ${job.id} for itinerary ${itinerary.id} processing...`);
     // do something with jobs
     const prompt = `I am traveling to ${itinerary.destination}. I am staying for ${itinerary.length_of_stay} days and my budget is $${itinerary.budget} USD`;
+    console.log(prompt);
 
     done(null, true);
   }
