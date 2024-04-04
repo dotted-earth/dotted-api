@@ -1,4 +1,4 @@
-import { MiddlewareHandler } from "hono";
+import type { MiddlewareHandler } from "hono";
 
 export const jsonOnly = () => {
   return (async (context, next) => {

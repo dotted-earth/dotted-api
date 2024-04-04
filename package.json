@@ -1,6 +1,7 @@
 {
   "scripts": {
     "dev": "bun run --hot src/index.ts",
+    "build": "bun build --compile --minify --sourcemap src/index.ts --outfile ./build/cli",
     "types:supabase": "source .env.development && supabase gen types typescript --project-id $SUPABASE_PROJECT_ID --schema public > types/database-generated.types.ts"
   },
   "dependencies": {
