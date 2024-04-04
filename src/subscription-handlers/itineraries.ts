@@ -1,6 +1,7 @@
 import { supabaseClient } from "@utils/supabase";
 import { logger } from "@utils/logger";
 import { generateItineraryQueue } from "src/workers/generate-itinerary";
+import { v4 as uuid } from "uuid";
 
 import type { RealtimePostgresInsertPayload } from "@supabase/supabase-js";
 import type { Tables } from "types/database-generated.types";
@@ -9,8 +10,6 @@ export async function handleNewItineraryCreated(
   payload: RealtimePostgresInsertPayload<Tables<"itineraries">>
 ) {
   try {
-    logger.info("new itinerary created");
-
     // query user's preferences from the itinerary that was created
     const [recreations, diets, cuisines, foodAllergies] = await Promise.all([
       supabaseClient
@@ -36,13 +35,20 @@ export async function handleNewItineraryCreated(
     ]);
 
     // send user preferences and itinerary to ai generate itinerary task queue
-    generateItineraryQueue.createJob({
-      recreations,
-      diets,
-      cuisines,
-      foodAllergies,
-      itinerary: payload.new,
-    });
+    const jobId = uuid();
+    generateItineraryQueue
+      .createJob({
+        recreations,
+        diets,
+        cuisines,
+        foodAllergies,
+        itinerary: payload.new,
+      })
+      .setId(jobId)
+      .save()
+      .then((job) => {
+        logger.info(`generate itinerary job ${job.id} created`);
+      });
   } catch (err) {
     if (err instanceof Error) {
       logger.error(err.message, err);

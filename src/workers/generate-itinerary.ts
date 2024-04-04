@@ -22,11 +22,9 @@ generateItineraryQueue.process(
     done: Queue.DoneCallback<boolean>
   ) => {
     const { itinerary } = job.data;
-    logger.info(`Job for ${itinerary.id} processing...`);
+    logger.info(`Job ${job.id} for itinerary ${itinerary.id} processing...`);
     // do something with jobs
     const prompt = `I am traveling to ${itinerary.destination}. I am staying for ${itinerary.length_of_stay} days and my budget is $${itinerary.budget} USD`;
-
-    console.log(prompt);
 
     done(null, true);
   }
