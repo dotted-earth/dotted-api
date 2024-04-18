@@ -1,20 +1,12 @@
 import "@utils/supabase";
+import Elysia from "elysia";
 import { logger } from "@utils/logger";
-import { Hono } from "hono";
-import { middlewareLogger } from "./middlewares/logger";
-import { jsonOnly } from "./middlewares/json-only";
-import { waitListService } from "./services/wait-list";
+import { waitListServices } from "./services/wait-list";
+import { itinerariesServices } from "./services/itinerary";
 
-logger.info(`app starting on PORT: ${Bun.env.PORT}`);
-
-const app = new Hono();
-
-app.use(middlewareLogger());
-app.use(jsonOnly());
-
-app.route("/wait-list", waitListService);
-
-export default {
-  port: Bun.env.PORT,
-  fetch: app.fetch,
-};
+new Elysia()
+  .use(waitListServices)
+  .use(itinerariesServices)
+  .listen(Bun.env.PORT, () => {
+    logger.info(`app starting on PORT: ${Bun.env.PORT}`);
+  });

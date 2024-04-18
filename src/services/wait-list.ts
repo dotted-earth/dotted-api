@@ -1,56 +1,37 @@
 import { supabaseClient } from "@utils/supabase";
-import { Hono } from "hono";
-import { z } from "zod";
+import Elysia, { t } from "elysia";
 
-export const waitListService = new Hono();
-const email = z.string().email();
-
-waitListService.post("join", async (c) => {
-  c.header("content-type", "application/json");
-  const data = await c.req.json();
-
-  if (!("email" in data)) {
-    return c.json(
-      {
-        error: "Bad Request",
-        message: "Invalid body",
-      },
-      400
-    );
-  }
-
-  const zodData = await email.safeParseAsync(data["email"]);
-  if (zodData.success) {
+export const waitListServices = new Elysia({ prefix: "/wait-list" }).post(
+  "/join",
+  async ({ body, error, set }) => {
     try {
-      await supabaseClient
+      const data = await supabaseClient
         .from("email_sign_ups")
-        .insert({ email: zodData.data });
-      return c.json({ message: "Success" }, 200);
-    } catch (error) {
-      if (error instanceof Error) {
-        return c.json(
-          {
-            error: "Internal Server Error",
-            message: error.message,
-          },
-          500
-        );
+        .insert({ email: body.email });
+      console.log(data);
+
+      set.headers["content-type"] = "application/json";
+
+      if (data.error) {
+        if (data.error.code === "23505") {
+          return error(data.status, data.error);
+        }
+
+        return error(500, data.error);
       }
 
-      return c.json(
-        {
-          message: "Internal Server Error",
-        },
-        500
-      );
-    }
-  }
+      set.status = "OK";
 
-  return c.json(
-    {
-      error: "Bad Request",
-      message: "Bad email",
-    },
-    400
-  );
-});
+      return {
+        message: "success",
+      };
+    } catch (err) {
+      error(500, err);
+    }
+  },
+  {
+    body: t.Object({
+      email: t.String({ format: "email", error: "Invalid email" }),
+    }),
+  }
+);

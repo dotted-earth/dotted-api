@@ -1,5 +1,6 @@
 import { logger } from "@utils/logger";
 import Queue from "bee-queue";
+import ollama from "ollama";
 import type { Tables } from "types/database.types";
 
 type GenerateItineraryJobData = {
@@ -24,8 +25,21 @@ generateItineraryQueue.process(
     const { itinerary } = job.data;
     logger.info(`Job ${job.id} for itinerary ${itinerary.id} processing...`);
     // do something with jobs
-    const prompt = `I am traveling to ${itinerary.destination}. I am staying for ${itinerary.length_of_stay} days and my budget is $${itinerary.budget} USD`;
-    console.log(prompt);
+    // const prompt = `I am traveling to ${itinerary.destination}. I am staying for ${itinerary.length_of_stay} days and my budget is $${itinerary.budget} USD`;
+    const testPrompt = "In one sentence, describe yourself";
+
+    const response = ollama
+      .chat({
+        model: "mistral",
+        messages: [{ content: testPrompt, role: "user" }],
+      })
+      .then((res) => {
+        console.log(res);
+        return res;
+      })
+      .catch((err) => {
+        console.log(err);
+      });
 
     done(null, true);
   }

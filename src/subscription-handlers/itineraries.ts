@@ -1,7 +1,7 @@
 import { supabaseClient } from "@utils/supabase";
 import { logger } from "@utils/logger";
 import { generateItineraryQueue } from "src/workers/generate-itinerary";
-import { v4 as uuid } from "uuid";
+import { uuidv7 } from "uuidv7";
 
 import type { RealtimePostgresInsertPayload } from "@supabase/supabase-js";
 import type { Tables } from "types/database-generated.types";
@@ -35,7 +35,7 @@ export async function handleNewItineraryCreated(
     ]);
 
     // send user preferences and itinerary to ai generate itinerary task queue
-    const jobId = uuid();
+    const jobId = uuidv7();
     generateItineraryQueue
       .createJob({
         recreations,
