@@ -36,6 +36,7 @@ export async function handleNewItineraryCreated(
 
     // send user preferences and itinerary to ai generate itinerary task queue
     const jobId = uuidv7();
+
     generateItineraryQueue
       .createJob({
         recreations,

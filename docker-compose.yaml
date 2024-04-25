@@ -1,0 +1,56 @@
+services:
+  app:
+    container_name: dotted
+    build: .
+    env_file:
+      - .env
+    environment:
+      - NODE_ENV=${NODE_ENV:-development}
+      - PORT=${PORT:-3000}
+      - SUPABASE_PROJECT_ID=$SUPABASE_PROJECT_ID
+      - SUPABASE_URL=$SUPABASE_URL
+      - SUPABASE_SECRET=$SUPABASE_SECRET
+      - OLLAMA_HOST=${OLLAMA_HOST:-http://127.0.0.1:11434}
+      - REDIS_HOST=${REDIS_HOST:-http://127.0.0.1:6379}
+    ports:
+      - 3000:${PORT:-3000}
+    networks:
+      - ollama-docker
+    depends_on:
+      - redis
+      - ollama
+    
+  redis:
+    image: redis:7.2.4-alpine
+    container_name: redis
+    env_file:
+      - .env
+    volumes:
+      - redis_data:/data
+    ports:
+      - 6379:6379
+    networks:
+      - ollama-docker
+
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama
+    env_file:
+      - .env
+    environment:
+      - OLLAMA_HOST=${OLLAMA_HOST:-http://127.0.0.1:11434}
+    ports:
+      - 11434:11434
+    volumes:
+      - ./ollama:/root/.ollama
+    networks:
+      - ollama-docker 
+
+volumes:
+  redis_data:
+    external: false
+  ollama:
+
+networks:
+  ollama-docker:
+    external: false

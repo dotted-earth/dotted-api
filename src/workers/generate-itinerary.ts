@@ -1,6 +1,7 @@
 import { logger } from "@utils/logger";
 import { dottedOllama } from "@utils/constants";
-import Queue from "bee-queue";
+import { newQueue } from "@utils/beequeue";
+import type Queue from "bee-queue";
 import type { Tables } from "types/database.types";
 
 type GenerateItineraryJobData = {
@@ -11,14 +12,13 @@ type GenerateItineraryJobData = {
   itinerary: Tables<"itineraries">;
 };
 
-export const generateItineraryQueue = new Queue<GenerateItineraryJobData>(
-  "generate_itinerary"
-);
+export const generateItineraryQueue =
+  newQueue<GenerateItineraryJobData>("generate_itinerary");
 
 // this is where the magic happens and we generate an itinerary
 generateItineraryQueue.process(
   10,
-  (
+  async (
     job: Queue.Job<GenerateItineraryJobData>,
     done: Queue.DoneCallback<boolean>
   ) => {
@@ -28,18 +28,15 @@ generateItineraryQueue.process(
     // const prompt = `I am traveling to ${itinerary.destination}. I am staying for ${itinerary.length_of_stay} days and my budget is $${itinerary.budget} USD`;
     const testPrompt = "In one sentence, describe yourself";
 
-    const response = dottedOllama
-      .chat({
+    try {
+      const response = await dottedOllama.chat({
         model: "mistral",
         messages: [{ content: testPrompt, role: "user" }],
-      })
-      .then((res) => {
-        console.log(res);
-        return res;
-      })
-      .catch((err) => {
-        console.log(err);
       });
+      console.log(response);
+    } catch (error) {
+      console.log(error);
+    }
 
     done(null, true);
   }

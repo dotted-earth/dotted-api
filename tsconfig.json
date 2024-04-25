@@ -28,7 +28,8 @@
     "noPropertyAccessFromIndexSignature": true,
 
     "paths": {
-      "@utils/*": ["src/utils/*"]
+      "@utils/*": ["src/utils/*"],
+      "@subscriptions/*": ["src/subscriptions/*"]
     }
   }
 }
