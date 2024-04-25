@@ -1,10 +1,10 @@
 import Elysia, { t } from "elysia";
-import ollama from "ollama";
+import { dottedOllama } from "@utils/constants";
 
 export const itinerariesServices = new Elysia({ prefix: "/itineraries" }).post(
   "/generate",
   async ({ body }) => {
-    const response = await ollama.chat({
+    const response = await dottedOllama.chat({
       model: "mistral",
       messages: [
         { content: "In one sentence, what is USA like?", role: "user" },

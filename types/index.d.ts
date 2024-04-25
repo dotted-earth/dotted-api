@@ -4,5 +4,6 @@ declare module "bun" {
     SUPABASE_PROJECT_ID: string;
     SUPABASE_URL: string;
     SUPABASE_SECRET: string;
+    OLLAMA_HOST: string;
   }
 }

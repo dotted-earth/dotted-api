@@ -1,6 +1,6 @@
 import { logger } from "@utils/logger";
+import { dottedOllama } from "@utils/constants";
 import Queue from "bee-queue";
-import ollama from "ollama";
 import type { Tables } from "types/database.types";
 
 type GenerateItineraryJobData = {
@@ -28,7 +28,7 @@ generateItineraryQueue.process(
     // const prompt = `I am traveling to ${itinerary.destination}. I am staying for ${itinerary.length_of_stay} days and my budget is $${itinerary.budget} USD`;
     const testPrompt = "In one sentence, describe yourself";
 
-    const response = ollama
+    const response = dottedOllama
       .chat({
         model: "mistral",
         messages: [{ content: testPrompt, role: "user" }],
