@@ -1,5 +1,5 @@
 import Elysia, { t } from "elysia";
-import { dottedOllama } from "@utils/constants";
+import { dottedOllama } from "@utils/dotted-ollama";
 
 export const itinerariesServices = new Elysia({ prefix: "/itineraries" }).post(
   "/generate",

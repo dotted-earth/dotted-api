@@ -1,6 +1,6 @@
 import { logger } from "@utils/logger";
-import { dottedOllama } from "@utils/constants";
-import { newQueue } from "@utils/beequeue";
+import { dottedOllama } from "@utils/dotted-ollama";
+import { newQueue } from "@utils/bee-queue";
 import type Queue from "bee-queue";
 import type { Tables } from "types/database.types";
 

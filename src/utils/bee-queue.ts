@@ -1,15 +1,20 @@
 import Queue from "bee-queue";
 import { createClient } from "redis";
 import { logger } from "./logger";
+import { subscribeToSupabaseEvents } from "@subscriptions/index";
 
 async function createRedisClient() {
   try {
-    return await createClient({
+    const client = await createClient({
       socket: {
         host: Bun.env.REDIS_HOST,
         port: 6379,
       },
     }).connect();
+
+    subscribeToSupabaseEvents();
+
+    return client;
   } catch (error) {
     logger.error("Redis Client Error", error);
   }
