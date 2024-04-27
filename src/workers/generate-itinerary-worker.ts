@@ -22,12 +22,12 @@ export function generateItineraryWorker(
       logger.info(`Job ${job.id} for itinerary ${itinerary.id} processing...`);
       // do something with jobs
       // const prompt = `I am traveling to ${itinerary.destination}. I am staying for ${itinerary.length_of_stay} days and my budget is $${itinerary.budget} USD`;
-      const testPrompt = "Give me ONE random word as output";
+      const testPrompt =
+        "Give me ONE random word as output and display only that output. DO NOT show anything else but the random word. When you have found your random word, EXIT your program";
 
       const chatResponseStream = await ollama.chat({
         model: "mistral",
         messages: [{ content: testPrompt, role: "user" }],
-        keep_alive: -1,
         stream: true,
       });
 

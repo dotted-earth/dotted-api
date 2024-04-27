@@ -41,8 +41,6 @@ const _generateItineraryWorker = generateItineraryWorker(
 const gracefulShutdown = async (signal: "SIGINT" | "SIGTERM") => {
   logger.info(`Received ${signal}, closing server...`);
   await _generateItineraryWorker.close();
-  await generateItineraryQueue.close();
-  await redisClient.quit();
   await dottedOllama.abort();
 
   // Other asynchronous closings
