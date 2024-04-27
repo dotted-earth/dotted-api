@@ -39,5 +39,3 @@ export async function createDottedOllama() {
 
   return ollama;
 }
-
-export const dottedOllama = await createDottedOllama();

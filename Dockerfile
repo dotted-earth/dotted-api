@@ -2,12 +2,12 @@
 
 # use the official Bun image
 # see all versions at https://hub.docker.com/r/oven/bun/tags
-FROM oven/bun:1.1-alpine as base
+FROM oven/bun:latest as base
 WORKDIR /app
+# ENV PYTHONUNBUFFERED=1
+# RUN apk add build-base
+# RUN apk add --update --no-cache python3 && ln -sf python3 /usr/bin/python
 
-# install dependencies into temp directory
-# this will cache them and speed up future builds
-FROM base AS install
 # install with --production (exclude devDependencies)
 COPY package.json bun.lockb ./
 RUN bun install --frozen-lockfile --production
@@ -24,7 +24,7 @@ RUN adduser \
     --no-create-home \
     --uid "${UID}" \
     appuser
-COPY --from=install /app/node_modules node_modules
+COPY --from=base /app/node_modules node_modules
 COPY --chown=appuser . .
 
 CMD [ "bun", "dev" ]
