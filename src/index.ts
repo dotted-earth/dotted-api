@@ -33,20 +33,17 @@ export const generateItineraryQueue = new Queue<GenerateItineraryJobData>(
   }
 );
 
-const _generateItineraryWorker = generateItineraryWorker(dottedOllama);
-
-new Elysia()
-  .use(waitListServices(supabaseClient))
-  .listen(Bun.env.PORT, (server) => {
-    logger.info(`app starting on ${server.url}`);
-
-    // subscribe to supabase events after external services loaded and server has started
-    supabaseNewItinerarySubscription(supabaseClient, generateItineraryQueue);
-  });
+const _generateItineraryWorker = generateItineraryWorker(
+  dottedOllama,
+  supabaseClient
+);
 
 const gracefulShutdown = async (signal: "SIGINT" | "SIGTERM") => {
   logger.info(`Received ${signal}, closing server...`);
   await _generateItineraryWorker.close();
+  await generateItineraryQueue.close();
+  await redisClient.quit();
+  await dottedOllama.abort();
 
   // Other asynchronous closings
   process.exit(0);
@@ -56,3 +53,12 @@ const processSignals = ["SIGINT", "SIGTERM"] as const;
 processSignals.forEach((signal) => {
   process.on(signal, () => gracefulShutdown(signal));
 });
+
+const app = new Elysia()
+  .use(waitListServices(supabaseClient))
+  .listen(Bun.env.PORT, () => {
+    // subscribe to supabase events after external services loaded and server has started
+    supabaseNewItinerarySubscription(supabaseClient, generateItineraryQueue);
+  });
+
+logger.info(`app starting on ${app.server?.url}`);

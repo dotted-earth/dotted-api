@@ -8,6 +8,7 @@ import type {
 import type { Tables } from "types/database-generated.types";
 import type { Queue } from "bullmq";
 import type { GenerateItineraryJobData } from "src/types/generate-itinerary-job-data";
+import { TASK } from "@utils/constants";
 
 export function handleNewItineraryCreated(
   supabaseClient: SupabaseClient,
@@ -46,9 +47,8 @@ export function handleNewItineraryCreated(
       // send user preferences and itinerary to ai generate itinerary task queue
       const jobId = uuidv7();
 
-      logger.info(`generate itinerary job ${jobId} created`);
-      await queue.add(
-        "myJob",
+      const job = await queue.add(
+        TASK.generate_itinerary,
         {
           recreations,
           diets,
@@ -61,6 +61,8 @@ export function handleNewItineraryCreated(
           removeOnComplete: true,
         }
       );
+
+      logger.info(`generate itinerary job ${job.id} created`);
     } catch (err) {
       if (err instanceof Error) {
         logger.error(err.message, err);

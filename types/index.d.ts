@@ -1,3 +1,6 @@
+import type { SupabaseClient } from "@supabase/supabase-js";
+import type { Database } from "./database-generated.types";
+
 declare module "bun" {
   interface Env {
     PORT: string;
@@ -8,3 +11,5 @@ declare module "bun" {
     REDIS_HOST: string;
   }
 }
+
+type DottedSupabase = SupabaseClient<Database>;

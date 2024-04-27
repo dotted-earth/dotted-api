@@ -5,3 +5,7 @@ export const SUPABASE_CHANNELS = {
 export const QUEUE_NAME = {
   itinerary: "itinerary",
 } as const;
+
+export const TASK = {
+  generate_itinerary: "generate_itinerary",
+} as const;

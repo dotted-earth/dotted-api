@@ -2,12 +2,12 @@ import { logger } from "@utils/logger";
 import { SUPABASE_CHANNELS } from "@utils/constants";
 import { handleNewItineraryCreated } from "src/subscription-handlers/itineraries";
 import type { Tables } from "types/database.types";
-import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Queue } from "bullmq";
 import type { GenerateItineraryJobData } from "src/types/generate-itinerary-job-data";
+import type { DottedSupabase } from "types";
 
 export function supabaseNewItinerarySubscription(
-  supabaseClient: SupabaseClient,
+  supabaseClient: DottedSupabase,
   queue: Queue<GenerateItineraryJobData>
 ) {
   supabaseClient

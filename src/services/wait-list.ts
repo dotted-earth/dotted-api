@@ -1,7 +1,7 @@
 import Elysia, { t } from "elysia";
-import type { SupabaseClient } from "@supabase/supabase-js";
+import type { DottedSupabase } from "types";
 
-export const waitListServices = (supabaseClient: SupabaseClient) =>
+export const waitListServices = (supabaseClient: DottedSupabase) =>
   new Elysia({ prefix: "/wait-list" }).post(
     "/join",
     async ({ body, error, set }) => {
@@ -9,7 +9,6 @@ export const waitListServices = (supabaseClient: SupabaseClient) =>
         const data = await supabaseClient
           .from("email_sign_ups")
           .insert({ email: body.email });
-        console.log(data);
 
         set.headers["content-type"] = "application/json";
 
