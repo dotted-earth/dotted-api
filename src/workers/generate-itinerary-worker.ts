@@ -26,7 +26,7 @@ export function generateItineraryWorker(
         "Give me ONE random word as output and display only that output. DO NOT show anything else but the random word. When you have found your random word, EXIT your program";
 
       const chatResponseStream = await ollama.chat({
-        model: "mistral",
+        model: Bun.env.OLLAMA_MODEL,
         messages: [{ content: testPrompt, role: "user" }],
         stream: true,
       });

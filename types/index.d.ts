@@ -8,6 +8,7 @@ declare module "bun" {
     SUPABASE_URL: string;
     SUPABASE_SECRET: string;
     OLLAMA_HOST: string;
+    OLLAMA_MODEL: string;
     REDIS_HOST: string;
   }
 }

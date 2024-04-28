@@ -1,7 +1,7 @@
 import { Ollama } from "ollama";
 import { logger } from "./logger";
 
-const MODEL = "mistral";
+const MODEL = Bun.env.OLLAMA_MODEL;
 
 export async function createDottedOllama() {
   const ollama = new Ollama({ host: Bun.env.OLLAMA_HOST });
