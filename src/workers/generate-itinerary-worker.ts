@@ -7,10 +7,7 @@ import type { GenerateItineraryJobData } from "src/types/generate-itinerary-job-
 import type { Ollama } from "ollama";
 import type { DottedSupabase } from "types";
 
-export function generateItineraryWorker(
-  ollama: Ollama,
-  supabaseClient: DottedSupabase
-) {
+export function generateItineraryWorker(supabaseClient: DottedSupabase) {
   const worker = new Worker<
     GenerateItineraryJobData,
     string,
@@ -18,25 +15,45 @@ export function generateItineraryWorker(
   >(
     QUEUE_NAME.itinerary,
     async (job) => {
-      const { itinerary } = job.data;
+      const { itinerary, cuisines, diets, foodAllergies, recreations } =
+        job.data;
       logger.info(`Job ${job.id} for itinerary ${itinerary.id} processing...`);
-      // do something with jobs
-      // const prompt = `I am traveling to ${itinerary.destination}. I am staying for ${itinerary.length_of_stay} days and my budget is $${itinerary.budget} USD`;
-      const testPrompt =
-        "Give me ONE random word as output and display only that output. DO NOT show anything else but the random word. When you have found your random word, EXIT your program";
 
-      const chatResponseStream = await ollama.chat({
-        model: Bun.env.OLLAMA_MODEL,
-        messages: [{ content: testPrompt, role: "user" }],
-        stream: true,
+      // We'll secure our python server later with Basic Auth
+      let token = "";
+
+      const data = await fetch(`${Bun.env.DOTTED_CREW_URL}/generate`, {
+        method: "POST",
+        headers: {
+          Authorization: `Basic ${token}`,
+        },
+        body: JSON.stringify({
+          itinerary,
+          cuisines,
+          diets,
+          food_allergies: foodAllergies,
+          recreations,
+        }),
+      }).then((res) => {
+        if (res.ok) {
+          return res.json();
+        }
+        return null;
       });
+      console.log(data);
 
       let message: string = "";
 
-      for await (const chatResponse of chatResponseStream) {
-        message += chatResponse.message.content;
-        job.updateProgress({ message });
-      }
+      // const chatResponseStream = await ollama.chat({
+      //   model: Bun.env.OLLAMA_MODEL,
+      //   messages: [{ content: testPrompt, role: "user" }],
+      //   stream: true,
+      // });
+
+      // for await (const chatResponse of chatResponseStream) {
+      //   message += chatResponse.message.content;
+      //   job.updateProgress({ message });
+      // }
 
       return message;
     },

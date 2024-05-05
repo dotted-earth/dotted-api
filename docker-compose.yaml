@@ -41,6 +41,7 @@ services:
       - OLLAMA_MODEL=${OLLAMA_MODEL}
       - OLLAMA_HOST=ollama:11434
       - REDIS_HOST=redis
+      - DOTTED_CREW_URL=${DOTTED_CREW_URL}
     ports:
       - 3000:${PORT:-3000}
     depends_on:

@@ -10,6 +10,7 @@ declare module "bun" {
     OLLAMA_HOST: string;
     OLLAMA_MODEL: string;
     REDIS_HOST: string;
+    DOTTED_CREW_URL: string;
   }
 }
 
