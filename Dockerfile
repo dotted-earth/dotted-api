@@ -2,7 +2,7 @@
 
 # use the official Bun image
 # see all versions at https://hub.docker.com/r/oven/bun/tags
-FROM oven/bun:latest as base
+FROM oven/bun:1.1.5 as base
 WORKDIR /app
 # ENV PYTHONUNBUFFERED=1
 # RUN apk add build-base
