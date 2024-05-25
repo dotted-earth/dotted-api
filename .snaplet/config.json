@@ -1,0 +1,5 @@
+{
+  "projectId": "clwlkeyjj6tbulyavaupzj8ia",
+  "targetDatabaseUrl": "postgresql://postgres:postgres@127.0.0.1:54322/postgres",
+  "adapter": "postgres"
+}
