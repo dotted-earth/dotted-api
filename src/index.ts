@@ -12,14 +12,11 @@ import { waitListServices } from "./services/wait-list";
 
 // external services
 import { createRedisClient } from "@utils/create-redis-client";
-// import { createDottedOllama } from "@utils/create-dotted-ollama";
 import { createSupabaseClient } from "@utils/create-supabase-client";
 
 // supabase real-time subscriptions
 import { supabaseNewItinerarySubscription } from "@subscriptions/itineraries";
 
-// export const dottedOllama = await createDottedOllama();
-logger.info(`Connected to Ollama on ${Bun.env.OLLAMA_HOST}:11434`);
 export const redisClient = createRedisClient();
 logger.info(`Connected to Redis on ${Bun.env.REDIS_HOST}:6379`);
 export const supabaseClient = createSupabaseClient();
@@ -38,7 +35,6 @@ const _generateItineraryWorker = generateItineraryWorker(supabaseClient);
 const gracefulShutdown = async (signal: "SIGINT" | "SIGTERM") => {
   logger.info(`Received ${signal}, closing server...`);
   await _generateItineraryWorker.close();
-  // await dottedOllama.abort();
 
   // Other asynchronous closings
   process.exit(0);

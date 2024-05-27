@@ -4,7 +4,6 @@ import { QUEUE_NAME, TASK } from "@utils/constants";
 import { createRedisClient } from "@utils/create-redis-client";
 
 import type { GenerateItineraryJobData } from "src/types/generate-itinerary-job-data";
-import type { Ollama } from "ollama";
 import type { DottedSupabase } from "types";
 
 export function generateItineraryWorker(supabaseClient: DottedSupabase) {
@@ -43,17 +42,6 @@ export function generateItineraryWorker(supabaseClient: DottedSupabase) {
       console.log(data);
 
       let message: string = "";
-
-      // const chatResponseStream = await ollama.chat({
-      //   model: Bun.env.OLLAMA_MODEL,
-      //   messages: [{ content: testPrompt, role: "user" }],
-      //   stream: true,
-      // });
-
-      // for await (const chatResponse of chatResponseStream) {
-      //   message += chatResponse.message.content;
-      //   job.updateProgress({ message });
-      // }
 
       return message;
     },

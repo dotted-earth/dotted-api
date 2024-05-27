@@ -1,0 +1,436 @@
+[
+  {
+    "schemaName": "public",
+    "tableName": "addresses",
+    "predictions": [
+      {
+        "input": "public addresses address_string",
+        "column": "address_string",
+        "shape": "STREET_ADDRESS",
+        "confidence": 0.9259989857673645,
+        "context": "GENERAL",
+        "confidenceContext": 0
+      },
+      {
+        "input": "public addresses city",
+        "column": "city",
+        "shape": "CITY",
+        "confidence": 0.9953849911689758,
+        "context": "GENERAL",
+        "confidenceContext": 0
+      },
+      {
+        "input": "public addresses country",
+        "column": "country",
+        "shape": "COUNTRY",
+        "confidence": 0.9937435984611511,
+        "context": "GENERAL",
+        "confidenceContext": 0
+      },
+      {
+        "input": "public addresses postal_code",
+        "column": "postal_code",
+        "shape": "ZIP_CODE",
+        "confidence": 0.9648076891899109,
+        "context": "GENERAL",
+        "confidenceContext": 0
+      },
+      {
+        "input": "public addresses state",
+        "column": "state",
+        "shape": "STATE",
+        "confidence": 0.9822304844856262,
+        "context": "GENERAL",
+        "confidenceContext": 0
+      },
+      {
+        "input": "public addresses street_1",
+        "column": "street1",
+        "shape": "STREET_ADDRESS",
+        "confidence": 0.9937835931777954,
+        "context": "GENERAL",
+        "confidenceContext": 0
+      },
+      {
+        "input": "public addresses street_2",
+        "column": "street2",
+        "shape": "STREET_ADDRESS",
+        "confidence": 0.9917764663696289,
+        "context": "GENERAL",
+        "confidenceContext": 0
+      }
+    ]
+  },
+  {
+    "schemaName": "public",
+    "tableName": "cuisines",
+    "predictions": [
+      {
+        "input": "public cuisines description",
+        "column": "description",
+        "shape": "COMMERCE_PRODUCT_DESCRIPTION",
+        "confidence": 0.5599384903907776,
+        "context": "GENERAL",
+        "confidenceContext": 0
+      },
+      {
+        "input": "public cuisines name",
+        "column": "name",
+        "shape": "COMPANY_NAME",
+        "confidence": 0.7933889627456665,
+        "context": "GENERAL",
+        "confidenceContext": 0
+      }
+    ]
+  },
+  {
+    "schemaName": "public",
+    "tableName": "destinations",
+    "predictions": [
+      {
+        "input": "public destinations city",
+        "column": "city",
+        "shape": "CITY",
+        "confidence": 0.9979656934738159,
+        "context": "GENERAL",
+        "confidenceContext": 0
+      },
+      {
+        "input": "public destinations country",
+        "column": "country",
+        "shape": "COUNTRY",
+        "confidence": 0.9961445331573486,
+        "context": "GENERAL",
+        "confidenceContext": 0
+      },
+      {
+        "input": "public destinations currency",
+        "column": "currency",
+        "shape": "FINANCE_CURRENCY_NAME",
+        "confidence": 0.9682638645172119,
+        "context": "GENERAL",
+        "confidenceContext": 0
+      },
+      {
+        "input": "public destinations description",
+        "column": "description",
+        "shape": "COMMERCE_PRODUCT_DESCRIPTION",
+        "confidence": 0.7537017464637756,
+        "context": "GENERAL",
+        "confidenceContext": 0
+      },
+      {
+        "input": "public destinations language",
+        "column": "language",
+        "shape": "SYSTEM_FILE_NAME",
+        "confidence": 0.9533904790878296,
+        "context": "GENERAL",
+        "confidenceContext": 0
+      },
+      {
+        "input": "public destinations name",
+        "column": "name",
+        "shape": "AIRLINE_AIRPORT_NAME",
+        "confidence": 0.5115514993667603,
+        "context": "GENERAL",
+        "confidenceContext": 0
+      }
+    ]
+  },
+  {
+    "schemaName": "public",
+    "tableName": "diets",
+    "predictions": [
+      {
+        "input": "public diets description",
+        "column": "description",
+        "shape": "COMMERCE_PRODUCT_DESCRIPTION",
+        "confidence": 0.89674973487854,
+        "context": "GENERAL",
+        "confidenceContext": 0
+      },
+      {
+        "input": "public diets name",
+        "column": "name",
+        "shape": "COMPANY_NAME",
+        "confidence": 0.4734754860401154,
+        "context": "GENERAL",
+        "confidenceContext": 0
+      }
+    ]
+  },
+  {
+    "schemaName": "public",
+    "tableName": "email_sign_ups",
+    "predictions": [
+      {
+        "input": "public email_sign_ups email",
+        "column": "email",
+        "shape": "EMAIL",
+        "confidence": 0.9976790547370911,
+        "context": "GENERAL",
+        "confidenceContext": 0
+      }
+    ]
+  },
+  {
+    "schemaName": "public",
+    "tableName": "food_allergies",
+    "predictions": [
+      {
+        "input": "public food_allergies description",
+        "column": "description",
+        "shape": "COMPANY_CATCH_PHRASE",
+        "confidence": 0.4074349105358124,
+        "context": "GENERAL",
+        "confidenceContext": 0
+      },
+      {
+        "input": "public food_allergies name",
+        "column": "name",
+        "shape": "FOOD",
+        "confidence": 0.9515220522880554,
+        "context": "GENERAL",
+        "confidenceContext": 0
+      }
+    ]
+  },
+  {
+    "schemaName": "auth",
+    "tableName": "identities",
+    "predictions": [
+      {
+        "input": "auth identities provider",
+        "column": "provider",
+        "shape": "INTERNET_DOMAIN_NAME",
+        "confidence": 0.9332965016365051,
+        "context": "GENERAL",
+        "confidenceContext": 0
+      },
+      {
+        "input": "auth identities provider_id",
+        "column": "provider_id",
+        "shape": "UUID",
+        "confidence": 0.9941206574440002,
+        "context": "GENERAL",
+        "confidenceContext": 0
+      }
+    ]
+  },
+  {
+    "schemaName": "public",
+    "tableName": "itineraries",
+    "predictions": [
+      {
+        "input": "public itineraries destination",
+        "column": "destination",
+        "shape": "STATUS",
+        "confidence": 0.6750028729438782,
+        "context": "GENERAL",
+        "confidenceContext": 0
+      }
+    ]
+  },
+  {
+    "schemaName": "public",
+    "tableName": "media",
+    "predictions": [
+      {
+        "input": "public media url",
+        "column": "url",
+        "shape": "IMAGE_URL",
+        "confidence": 0.9267058372497559,
+        "context": "GENERAL",
+        "confidenceContext": 0
+      }
+    ]
+  },
+  {
+    "schemaName": "public",
+    "tableName": "profiles",
+    "predictions": [
+      {
+        "input": "public profiles avatar_url",
+        "column": "avatar_url",
+        "shape": "INTERNET_AVATAR",
+        "confidence": 0.8755327463150024,
+        "context": "GENERAL",
+        "confidenceContext": 0
+      },
+      {
+        "input": "public profiles full_name",
+        "column": "full_name",
+        "shape": "PERSON_FULL_NAME",
+        "confidence": 0.9122052788734436,
+        "context": "GENERAL",
+        "confidenceContext": 0
+      },
+      {
+        "input": "public profiles username",
+        "column": "username",
+        "shape": "USERNAME",
+        "confidence": 0.9713683724403381,
+        "context": "GENERAL",
+        "confidenceContext": 0
+      }
+    ]
+  },
+  {
+    "schemaName": "public",
+    "tableName": "recreations",
+    "predictions": [
+      {
+        "input": "public recreations description",
+        "column": "description",
+        "shape": "COMMERCE_PRODUCT_DESCRIPTION",
+        "confidence": 0.8641734719276428,
+        "context": "GENERAL",
+        "confidenceContext": 0
+      },
+      {
+        "input": "public recreations name",
+        "column": "name",
+        "shape": "COMPANY_NAME",
+        "confidence": 0.5224767327308655,
+        "context": "GENERAL",
+        "confidenceContext": 0
+      }
+    ]
+  },
+  {
+    "schemaName": "public",
+    "tableName": "schedule_items",
+    "predictions": [
+      {
+        "input": "public schedule_items description",
+        "column": "description",
+        "shape": "COMMERCE_PRODUCT_DESCRIPTION",
+        "confidence": 0.7819201350212097,
+        "context": "GENERAL",
+        "confidenceContext": 0
+      },
+      {
+        "input": "public schedule_items name",
+        "column": "name",
+        "shape": "SYSTEM_CRON",
+        "confidence": 0.9708436131477356,
+        "context": "GENERAL",
+        "confidenceContext": 0
+      }
+    ]
+  },
+  {
+    "schemaName": "public",
+    "tableName": "schedules",
+    "predictions": [
+      {
+        "input": "public schedules description",
+        "column": "description",
+        "shape": "FINANCE_TRANSACTION_DESCRIPTION",
+        "confidence": 0.6335635185241699,
+        "context": "GENERAL",
+        "confidenceContext": 0
+      },
+      {
+        "input": "public schedules name",
+        "column": "name",
+        "shape": "COMPANY_NAME",
+        "confidence": 0.356598287820816,
+        "context": "GENERAL",
+        "confidenceContext": 0
+      }
+    ]
+  },
+  {
+    "schemaName": "auth",
+    "tableName": "sessions",
+    "predictions": [
+      {
+        "input": "auth sessions tag",
+        "column": "tag",
+        "shape": "PASSWORD",
+        "confidence": 0.5701985955238342,
+        "context": "GENERAL",
+        "confidenceContext": 0
+      },
+      {
+        "input": "auth sessions user_agent",
+        "column": "user_agent",
+        "shape": "USER_AGENT",
+        "confidence": 0.9931508302688599,
+        "context": "GENERAL",
+        "confidenceContext": 0
+      }
+    ]
+  },
+  {
+    "schemaName": "auth",
+    "tableName": "users",
+    "predictions": [
+      {
+        "input": "auth users aud",
+        "column": "aud",
+        "shape": "AUTHENTICATION_PROVIDER",
+        "confidence": 0,
+        "context": "GENERAL",
+        "confidenceContext": 0
+      },
+      {
+        "input": "auth users confirmation_token",
+        "column": "confirmation_token",
+        "shape": "TOKEN",
+        "confidence": 0.9940432906150818,
+        "context": "GENERAL",
+        "confidenceContext": 0
+      },
+      {
+        "input": "auth users email",
+        "column": "email",
+        "shape": "EMAIL",
+        "confidence": 0.994260311126709,
+        "context": "GENERAL",
+        "confidenceContext": 0
+      },
+      {
+        "input": "auth users email_change",
+        "column": "email_change",
+        "shape": "EMAIL",
+        "confidence": 0.9721580743789673,
+        "context": "GENERAL",
+        "confidenceContext": 0
+      },
+      {
+        "input": "auth users email_change_token_new",
+        "column": "email_change_token_new",
+        "shape": "TOKEN",
+        "confidence": 0.9904540777206421,
+        "context": "GENERAL",
+        "confidenceContext": 0
+      },
+      {
+        "input": "auth users encrypted_password",
+        "column": "encrypted_password",
+        "shape": "PASSWORD",
+        "confidence": 0.9887174367904663,
+        "context": "GENERAL",
+        "confidenceContext": 0
+      },
+      {
+        "input": "auth users recovery_token",
+        "column": "recovery_token",
+        "shape": "TOKEN",
+        "confidence": 0.9935053586959839,
+        "context": "GENERAL",
+        "confidenceContext": 0
+      },
+      {
+        "input": "auth users role",
+        "column": "role",
+        "shape": "ROLE",
+        "confidence": 0.9707857370376587,
+        "context": "GENERAL",
+        "confidenceContext": 0
+      }
+    ]
+  }
+]
