@@ -12,8 +12,8 @@ const main = async () => {
   // Truncate all tables in the database
   await seed.$resetDatabase();
 
-  // generate 5 schedule items
-  await seed.schedule_items((x) => x(5));
+  // TODO - find a way to seed oauth users since we don't use email/passwords
+
   // Type completion not working? You might want to reload your TypeScript Server to pick up the changes
 
   console.log("Database seeded successfully!");

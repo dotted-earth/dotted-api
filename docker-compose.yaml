@@ -7,19 +7,6 @@ services:
     ports:
       - 6379:6379
 
-  ollama:
-    image: ollama/ollama:latest
-    container_name: ollama
-    ports:
-      - 11434:11434
-    volumes:
-      - ollama:/root/.ollama
-    healthcheck:
-      test: ollama --version || exit 1
-      interval: 10s
-      timeout: 30s
-      retries: 5
-
   app:
     container_name: dotted
     build: .
@@ -38,10 +25,8 @@ services:
       - SUPABASE_PROJECT_ID=$SUPABASE_PROJECT_ID
       - SUPABASE_URL=$SUPABASE_URL
       - SUPABASE_SECRET=$SUPABASE_SECRET
-      - OLLAMA_MODEL=${OLLAMA_MODEL}
-      - OLLAMA_HOST=ollama:11434
       - REDIS_HOST=redis
-      - DOTTED_CREW_URL=${DOTTED_CREW_URL}
+      - GOOGLE_GEMINI_AI_KEY=$GOOGLE_GEMINI_AI_KEY
     ports:
       - 3000:${PORT:-3000}
     depends_on:
@@ -51,9 +36,6 @@ services:
     command: bun dev
 
 volumes:
-  ollama:
-    name: "dotted-ollama"
-    external: false
   redis:
     name: "dotted-redis"
     external: false
