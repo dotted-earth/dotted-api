@@ -12,6 +12,26 @@ const main = async () => {
   // Truncate all tables in the database
   await seed.$resetDatabase();
 
+  await seed.cuisines([
+    { name: "Local" },
+    { name: "Asian" },
+    { name: "European" },
+    { name: "American" },
+    { name: "Middle Eastern" },
+    { name: "Indian" },
+  ]);
+  await seed.diets([
+    { name: "Vegan" },
+    { name: "Vegetarian" },
+    { name: "Keto" },
+  ]);
+  await seed.recreations([
+    { name: "Parks" },
+    { name: "Museums" },
+    { name: "Beach" },
+  ]);
+  await seed.food_allergies([{ name: "Milk" }, { name: "Peanut" }]);
+
   // TODO - find a way to seed oauth users since we don't use email/passwords
 
   // Type completion not working? You might want to reload your TypeScript Server to pick up the changes

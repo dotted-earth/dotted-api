@@ -2,13 +2,14 @@
   "scripts": {
     "dev": "bun --watch src/index.ts",
     "build": "bun build --compile --minify --sourcemap src/index.ts --outfile ./build/cli",
-    "types:supabase": "source .env.development && supabase gen types typescript --project-id $SUPABASE_PROJECT_ID --schema public > types/database-generated.types.ts",
+    "types:supabase": "supabase gen types typescript --schema public --local > types/database-generated.types.ts",
     "snaplet:sync": "bunx @snaplet/seed sync",
     "seed": "bunx tsx seed.ts > supabase/seed.sql",
     "seed:dry": "bunx tsx seed.ts"
   },
   "dependencies": {
     "@elysiajs/stream": "^1.0.2",
+    "@google/generative-ai": "^0.11.4",
     "@supabase/supabase-js": "^2.42.0",
     "bullmq": "^5.7.6",
     "elysia": "^1.0.13",
