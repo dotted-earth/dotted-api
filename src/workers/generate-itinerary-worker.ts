@@ -2,6 +2,7 @@ import { logger } from "@utils/logger";
 import { Worker } from "bullmq";
 import { QUEUE_NAME, TASK } from "@utils/constants";
 import { createRedisClient } from "@utils/create-redis-client";
+import { AiAgent } from "@utils/google-gemini-agent";
 
 import type { GenerateItineraryJobData } from "src/types/generate-itinerary-job-data";
 import type { DottedSupabase } from "types";
@@ -18,32 +19,49 @@ export function generateItineraryWorker(supabaseClient: DottedSupabase) {
         job.data;
       logger.info(`Job ${job.id} for itinerary ${itinerary.id} processing...`);
 
-      // We'll secure our python server later with Basic Auth
-      let token = "";
-
-      const data = await fetch(`${Bun.env.DOTTED_CREW_URL}/generate`, {
-        method: "POST",
-        headers: {
-          Authorization: `Basic ${token}`,
+      const travelAgent = new AiAgent({
+        model: "gemini-1.5-pro",
+        role: "You are an expert travel agent",
+        outputJson: {
+          itinerary: {
+            startDate: itinerary.start_date,
+            endDate: itinerary.end_date,
+            scheduleItems: [
+              {
+                date: itinerary.start_date,
+                name: "name of activity",
+                description: "description of activity",
+                startTime: "start time of activity",
+                endTime: "end time of activity",
+                duration: "length of activity in minutes",
+                price: "estimate cost of activity in USD",
+                location: {
+                  lat: "latitude of activity",
+                  lon: "longitude of activity",
+                  address: {
+                    street1: "street number and name of location",
+                    street2:
+                      "optional street name like apartment, unit, or suite",
+                    city: "city of location",
+                    country: "country of location",
+                    postalCode: "postal code of location",
+                  },
+                },
+              },
+            ],
+          },
         },
-        body: JSON.stringify({
-          itinerary,
-          cuisines,
-          diets,
-          food_allergies: foodAllergies,
-          recreations,
-        }),
-      }).then((res) => {
-        if (res.ok) {
-          return res.json();
-        }
-        return null;
       });
-      console.log(data);
 
-      let message: string = "";
+      const { destination, length_of_stay } = itinerary;
 
-      return message;
+      const data = await travelAgent.runTaskAsync(
+        `Generate a ${length_of_stay}-day itinerary to ${destination}`
+      );
+
+      console.log(data.response.text());
+
+      return data.response.text();
     },
     {
       connection: createRedisClient({ maxRetriesPerRequest: null }),

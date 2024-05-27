@@ -38,8 +38,20 @@ Set up dev environment
 2. Fill out .env completely
 3. Install Docker Desktop and have it running
 4. Run `supabase start` to start containers
-5. Run migrations `supabase db reset`
-6. Seed db with `bun seed`
+
+   Should yield:
+
+   ```
+    API URL: http://127.0.0.1:54321
+    GraphQL URL: http://127.0.0.1:54321/graphql/v1
+    S3 Storage URL: http://127.0.0.1:54321/storage/v1/s3
+    DB URL: postgresql://postgres:postgres@127.0.0.1:54322/postgres
+    Studio URL: http://127.0.0.1:54323
+    Inbucket URL: http://127.0.0.1:54324
+   ```
+
+5. Enter your `service_role key` into `.env` for `SUPABASE_SERVICE_ROLE_KEY`
+6. Run migrations `supabase db reset`
 7. For reference, use [Supabase CLI docs](https://supabase.com/docs/guides/cli/local-development)
 
 ### Login to Supabase
@@ -48,8 +60,14 @@ Set up dev environment
 
 ### Generate Supabase Schemas
 
-1. `bunx supabase gen types typescript --project-id "$PROJECT_REF" --schema public > types/supabase.ts`
+1. `bunx types:supabase`
 
 ### Run server
 
 1. `bun dev`
+
+### Run with Docker
+
+1. `docker compose up --build`
+2. `docker compose down`
+3. `docker compose up --watch`

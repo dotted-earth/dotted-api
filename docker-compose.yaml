@@ -22,16 +22,14 @@ services:
     environment:
       - NODE_ENV=${NODE_ENV:-development}
       - PORT=${PORT:-3000}
-      - SUPABASE_PROJECT_ID=$SUPABASE_PROJECT_ID
       - SUPABASE_URL=$SUPABASE_URL
-      - SUPABASE_SECRET=$SUPABASE_SECRET
+      - SUPABASE_SERVICE_ROLE_KEY=$SUPABASE_SERVICE_ROLE_KEY
       - REDIS_HOST=redis
       - GOOGLE_GEMINI_AI_KEY=$GOOGLE_GEMINI_AI_KEY
     ports:
       - 3000:${PORT:-3000}
     depends_on:
       - redis
-      - ollama
     stop_signal: SIGINT
     command: bun dev
 

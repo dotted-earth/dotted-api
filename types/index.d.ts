@@ -4,13 +4,10 @@ import type { Database } from "./database-generated.types";
 declare module "bun" {
   interface Env {
     PORT: string;
-    SUPABASE_PROJECT_ID: string;
     SUPABASE_URL: string;
-    SUPABASE_SECRET: string;
-    OLLAMA_HOST: string;
-    OLLAMA_MODEL: string;
+    SUPABASE_SERVICE_ROLE_KEY: string;
     REDIS_HOST: string;
-    DOTTED_CREW_URL: string;
+    GOOGLE_GEMINI_AI_KEY: string;
   }
 }
 
