@@ -1,0 +1,8 @@
+INSERT INTO public.cuisines (id,created_at,name,description) VALUES (1, DEFAULT, 'Local', 'Modern Indian Cuisine'), (2, DEFAULT, 'Asian', 'Vegan Juice Bar'), (3, DEFAULT, 'European', 'Indonesian Nasi Goreng'), (4, DEFAULT, 'American', 'Vegan Juice Bar'), (5, DEFAULT, 'Middle Eastern', 'Vegan Juice Bar'), (6, DEFAULT, 'Indian', 'French Creperie');
+SELECT setval('"public"."cuisines_id_seq"'::regclass, (SELECT MAX("id") FROM "public"."cuisines"));
+INSERT INTO public.diets (id,created_at,name,description) VALUES (1, DEFAULT, 'Vegan', 'Autoimmune protocol diet: Diet designed to reduce inflammation and improve autoimmune conditions'), (2, DEFAULT, 'Vegetarian', 'Portfolio diet: Diet emphasizing a portfolio of foods to improve cardiovascular health'), (3, DEFAULT, 'Keto', 'Pescatarian diet: Vegetarian diet that includes fish and seafood');
+SELECT setval('"public"."diet_id_seq"'::regclass, (SELECT MAX("id") FROM "public"."diets"));
+INSERT INTO public.recreations (id,created_at,name,description) VALUES (1, DEFAULT, 'Parks', 'Recreation center with indoor pool, gym, and fitness classes'), (2, DEFAULT, 'Museums', 'Baseball complex with 5 fields and concessions stand'), (3, DEFAULT, 'Beach', 'Nature preserve with trails, bird-watching, and educational programs');
+SELECT setval('"public"."recreations_id_seq"'::regclass, (SELECT MAX("id") FROM "public"."recreations"));
+INSERT INTO public.food_allergies (id,created_at,name,description) VALUES (1, DEFAULT, 'Milk', 'Lactose intolerance, milk and dairy products allergy'), (2, DEFAULT, 'Peanut', 'Sesame oil allergy, reaction to sesame-based foods');
+SELECT setval('"public"."food_allergies_id_seq"'::regclass, (SELECT MAX("id") FROM "public"."food_allergies"));
