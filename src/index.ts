@@ -4,7 +4,6 @@ import { logger } from "@utils/logger";
 import { Queue } from "bullmq";
 import { QUEUE_NAME } from "@utils/constants";
 import { generateItineraryWorker } from "./workers/generate-itinerary-worker";
-
 import type { GenerateItineraryJobData } from "./types/generate-itinerary-job-data";
 
 // internal services

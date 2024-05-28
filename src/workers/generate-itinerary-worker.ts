@@ -3,6 +3,8 @@ import { Worker } from "bullmq";
 import { QUEUE_NAME, TASK } from "@utils/constants";
 import { createRedisClient } from "@utils/create-redis-client";
 import { AiAgent } from "@utils/google-gemini-agent";
+import { JsonOutputParser } from "@langchain/core/output_parsers";
+import { itineraryModel } from "src/models/itinerary-model";
 
 import type { GenerateItineraryJobData } from "src/types/generate-itinerary-job-data";
 import type { DottedSupabase } from "types";
@@ -10,7 +12,7 @@ import type { DottedSupabase } from "types";
 export function generateItineraryWorker(supabaseClient: DottedSupabase) {
   const worker = new Worker<
     GenerateItineraryJobData,
-    string,
+    Record<string, any>,
     typeof TASK.generate_itinerary
   >(
     QUEUE_NAME.itinerary,
@@ -22,46 +24,29 @@ export function generateItineraryWorker(supabaseClient: DottedSupabase) {
       const travelAgent = new AiAgent({
         model: "gemini-1.5-pro",
         role: "You are an expert travel agent",
-        outputJson: {
-          itinerary: {
-            startDate: itinerary.start_date,
-            endDate: itinerary.end_date,
-            scheduleItems: [
-              {
-                date: itinerary.start_date,
-                name: "name of activity",
-                description: "description of activity",
-                startTime: "start time of activity",
-                endTime: "end time of activity",
-                duration: "length of activity in minutes",
-                price: "estimate cost of activity in USD",
-                location: {
-                  lat: "latitude of activity",
-                  lon: "longitude of activity",
-                  address: {
-                    street1: "street number and name of location",
-                    street2:
-                      "optional street name like apartment, unit, or suite",
-                    city: "city of location",
-                    country: "country of location",
-                    postalCode: "postal code of location",
-                  },
-                },
-              },
-            ],
-          },
-        },
+        outputJson: itineraryModel.examples,
       });
 
-      const { destination, length_of_stay } = itinerary;
+      const { destination, length_of_stay, start_date, end_date } = itinerary;
 
       const data = await travelAgent.runTaskAsync(
-        `Generate a ${length_of_stay}-day itinerary to ${destination}`
+        `Generate a ${length_of_stay}-day itinerary to ${destination} for the dates ${start_date} to ${end_date}.
+         The activities should include: ${recreations
+           .map((r) => r.name)
+           .join(", ")}.
+         Dietary restrictions to include: ${diets.map((d) => d.name).join(", ")}
+         Cuisines to include: ${cuisines.map((c) => c.name).join(", ")}
+         Consider meal options with fool allergies: ${foodAllergies
+           .map((f) => f.name)
+           .join(", ")}
+        `
       );
 
-      console.log(data.response.text());
+      // Set up a parser
+      const parser = new JsonOutputParser();
+      const itineraryDraft = await parser.parse(data.response.text());
 
-      return data.response.text();
+      return itineraryDraft;
     },
     {
       connection: createRedisClient({ maxRetriesPerRequest: null }),
@@ -74,7 +59,7 @@ export function generateItineraryWorker(supabaseClient: DottedSupabase) {
 
     // TODO - get chat response to return json with destinations and activities field
     // parse through info and create data in the db
-    returnValue;
+    console.log(returnValue);
 
     // update the itinerary status to draft mode
     await supabaseClient

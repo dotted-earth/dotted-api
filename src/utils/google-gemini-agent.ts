@@ -43,6 +43,9 @@ export class AiAgent {
         systemInstruction: role,
         tools: tools,
         toolConfig: toolsConfig,
+        generationConfig: {
+          temperature: 0.5,
+        },
       },
       outputJson
         ? {
