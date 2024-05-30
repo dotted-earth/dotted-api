@@ -4,7 +4,6 @@ import { logger } from "@utils/logger";
 import { Queue } from "bullmq";
 import { QUEUE_NAME } from "@utils/constants";
 import { generateItineraryWorker } from "./workers/generate-itinerary-worker";
-import type { GenerateItineraryJobData } from "./types/generate-itinerary-job-data";
 
 // internal services
 import { waitListServices } from "./services/wait-list";
@@ -12,14 +11,21 @@ import { waitListServices } from "./services/wait-list";
 // external services
 import { createRedisClient } from "@utils/create-redis-client";
 import { createSupabaseClient } from "@utils/create-supabase-client";
+import { createViatorClient } from "@utils/create-viator-client";
+import { createTursoClient } from "@utils/create-turso-client";
 
 // supabase real-time subscriptions
 import { supabaseNewItinerarySubscription } from "@subscriptions/itineraries";
 
+import type { GenerateItineraryJobData } from "./types/generate-itinerary-job-data";
+import type { Destination } from "./models/viator-response";
+
 export const redisClient = createRedisClient();
-logger.info(`Connected to Redis on ${Bun.env.REDIS_HOST}:6379`);
 export const supabaseClient = createSupabaseClient();
-logger.info("Connected to Supabase");
+export const tursoClient = createTursoClient();
+export const viatorClient = createViatorClient({
+  apiKey: Bun.env.VIATOR_API_KEY,
+});
 
 // create queues
 export const generateItineraryQueue = new Queue<GenerateItineraryJobData>(
@@ -46,7 +52,17 @@ processSignals.forEach((signal) => {
 
 const app = new Elysia()
   .use(waitListServices(supabaseClient))
-  .listen(Bun.env.PORT, () => {
+  .listen(Bun.env.PORT, async () => {
+    // const destinations = await viatorClient.getDestinations();
+    // const destinationText = await Bun.file("src/data/destinations.json", {
+    //   type: "application/json",
+    // }).text();
+    // const destinations: Destination[] = JSON.parse(destinationText);
+
+    // for (const destination of destinations) {
+
+    // }
+
     // subscribe to supabase events after external services loaded and server has started
     supabaseNewItinerarySubscription(supabaseClient, generateItineraryQueue);
   });

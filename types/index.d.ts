@@ -8,6 +8,9 @@ declare module "bun" {
     SUPABASE_SERVICE_ROLE_KEY: string;
     REDIS_HOST: string;
     GOOGLE_GEMINI_AI_KEY: string;
+    VIATOR_API_KEY: string;
+    TURSO_DATABASE_URL: string;
+    TURSO_AUTH_TOKEN: string;
   }
 }
 

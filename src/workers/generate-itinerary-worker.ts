@@ -53,13 +53,34 @@ export function generateItineraryWorker(supabaseClient: DottedSupabase) {
     }
   );
 
-  worker.on("completed", async (job, returnValue) => {
+  worker.on("completed", async (job, itinerary) => {
     const data = job.data;
     logger.info(`Job ${job.id} complete for itinerary ${data.itinerary.id}`);
 
     // TODO - get chat response to return json with destinations and activities field
     // parse through info and create data in the db
-    console.log(returnValue);
+    if ("schedule" in itinerary && Array.isArray(itinerary["schedule"])) {
+      for (const schedule of itinerary["schedule"]) {
+        if (
+          "scheduleItems" in schedule &&
+          Array.isArray(schedule["scheduleItems"])
+        ) {
+          for (const item of schedule["scheduleItems"]) {
+            const {
+              name,
+              description,
+              type,
+              startTime,
+              endTime,
+              duration,
+              price,
+              location,
+            } = item;
+            // TODO - create schedule items, look up alternatives,
+          }
+        }
+      }
+    }
 
     // update the itinerary status to draft mode
     await supabaseClient

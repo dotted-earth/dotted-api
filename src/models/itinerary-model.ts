@@ -14,6 +14,7 @@ const address = t.Object(
     city: t.String({
       description: "The city is a required field where this address is located",
     }),
+    state: t.String({ description: "The state is a required filed" }),
     country: t.String({
       description:
         "The country is a required field where this address is located",
@@ -129,6 +130,7 @@ export const itineraryModel = t.Object(
                   street1: "123 fake street",
                   street2: "unit 32",
                   city: "Sydney",
+                  state: "South Wales",
                   country: "Australia",
                   postalCode: "11029",
                 },
@@ -159,6 +161,7 @@ export const itineraryModel = t.Object(
                   street1: "123 fake street",
                   street2: "unit 32",
                   city: "Sydney",
+                  state: "South Wales",
                   country: "Australia",
                   postalCode: "11029",
                 },
@@ -189,6 +192,7 @@ export const itineraryModel = t.Object(
                   street1: "123 fake street",
                   street2: "unit 32",
                   city: "Sydney",
+                  state: "South Wales",
                   country: "Australia",
                   postalCode: "11029",
                 },
