@@ -2,27 +2,11 @@
 
 Set up dev environment
 
-## Set-up Options
-
-1. [Docker Set-up](#docker-set-up)
-2. [Traditional Set-up]("#traditional-set-up")
-
-## Docker Set-up
-
-### Prerequisites
-
-1. Install [Docker](https://docs.docker.com/get-docker/)
-
-### Run App
-
-2. `docker compose up`
-
-## Traditional Set-up
-
-### Prerequisites
+## Prerequisites
 
 1. Install Bun.sh, `curl -fsSL https://bun.sh/install | bash`
 2. Install Redis
+3. Get API keys
 
 ### Install dependencies
 
@@ -50,7 +34,7 @@ Set up dev environment
     Inbucket URL: http://127.0.0.1:54324
    ```
 
-5. Enter your `service_role key` into `.env` for `SUPABASE_SERVICE_ROLE_KEY`
+5. Enter your `service_role key` into `.env` for `SUPABASE_SERVICE_ROLE_KEY` and `API URL` for `SUPABASE_URL`
 6. Run migrations `supabase db reset`
 7. For reference, use [Supabase CLI docs](https://supabase.com/docs/guides/cli/local-development)
 
@@ -58,9 +42,13 @@ Set up dev environment
 
 1. `bunx supabase login`
 
+### Generate Supabase Migrations
+
+1. `supabase db diff --use-migra -f <migration_file_name>`
+
 ### Generate Supabase Schemas
 
-1. `bunx types:supabase`
+1. `bun types:supabase`
 
 ### Run server
 

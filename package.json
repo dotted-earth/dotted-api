@@ -5,26 +5,30 @@
     "types:supabase": "supabase gen types typescript --schema public --local > types/database-generated.types.ts",
     "snaplet:sync": "bunx @snaplet/seed sync",
     "seed": "bunx tsx seed.ts > supabase/seed.sql",
-    "seed:dry": "bunx tsx seed.ts"
+    "seed:dry": "bunx tsx seed.ts",
+    "docker:dev": "docker compose down && docker compose build && docker compose up --watch"
   },
   "dependencies": {
     "@elysiajs/stream": "^1.0.2",
     "@google/generative-ai": "^0.11.4",
+    "@libsql/client": "^0.6.1",
     "@supabase/supabase-js": "^2.42.0",
     "bullmq": "^5.7.6",
+    "drizzle-orm": "^0.31.1",
     "elysia": "^1.0.13",
     "ioredis": "^5.4.1",
-    "supabase": "^1.153.1",
+    "langchain": "^0.2.2",
     "uuidv7": "^0.6.3",
     "winston": "^3.13.0",
     "winston-daily-rotate-file": "^5.0.0"
   },
   "devDependencies": {
     "@snaplet/copycat": "^5.0.0",
-    "@snaplet/seed": "^0.97.19",
+    "@snaplet/seed": "^0.97.20",
     "@types/bun": "latest",
     "@types/uuid": "^9.0.8",
     "postgres": "^3.4.4",
+    "supabase": "^1.169.6",
     "type-fest": "^4.14.0"
   },
   "type": "module"

@@ -1,4 +1,5 @@
 import Redis, { type RedisOptions } from "ioredis";
+import { logger } from "./logger";
 
 export const redisOpts: RedisOptions = {
   host: Bun.env.REDIS_HOST,
@@ -6,8 +7,11 @@ export const redisOpts: RedisOptions = {
 };
 
 export function createRedisClient(opts?: RedisOptions) {
-  return new Redis({
+  const client = new Redis({
     ...redisOpts,
     ...opts,
   });
+
+  logger.info(`Connected to Redis on ${Bun.env.REDIS_HOST}:6379`);
+  return client;
 }

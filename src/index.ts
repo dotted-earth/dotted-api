@@ -5,22 +5,26 @@ import { Queue } from "bullmq";
 import { QUEUE_NAME } from "@utils/constants";
 import { generateItineraryWorker } from "./workers/generate-itinerary-worker";
 
-import type { GenerateItineraryJobData } from "./types/generate-itinerary-job-data";
-
 // internal services
 import { waitListServices } from "./services/wait-list";
 
 // external services
 import { createRedisClient } from "@utils/create-redis-client";
 import { createSupabaseClient } from "@utils/create-supabase-client";
+import { createViatorClient } from "@utils/create-viator-client";
+import { createSQLiteClient } from "@utils/create-sqlite-client";
 
 // supabase real-time subscriptions
 import { supabaseNewItinerarySubscription } from "@subscriptions/itineraries";
 
+import type { GenerateItineraryJobData } from "./types/generate-itinerary-job-data";
+
 export const redisClient = createRedisClient();
-logger.info(`Connected to Redis on ${Bun.env.REDIS_HOST}:6379`);
 export const supabaseClient = createSupabaseClient();
-logger.info("Connected to Supabase");
+export const viatorClient = createViatorClient({
+  apiKey: Bun.env.VIATOR_API_KEY,
+});
+export const dottedDb = createSQLiteClient();
 
 // create queues
 export const generateItineraryQueue = new Queue<GenerateItineraryJobData>(
