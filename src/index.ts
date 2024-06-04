@@ -51,7 +51,7 @@ processSignals.forEach((signal) => {
 
 const app = new Elysia()
   .use(waitListServices(supabaseClient))
-  .listen(Bun.env.PORT, async () => {
+  .listen(Bun.env.PORT, () => {
     // subscribe to supabase events after external services loaded and server has started
     supabaseNewItinerarySubscription(supabaseClient, generateItineraryQueue);
   });
