@@ -124,8 +124,8 @@ export const itineraryModel = t.Object(
               duration: 60,
               price: 20.5,
               location: {
-                lat: "latitude of location",
-                lon: "longitude of location",
+                lat: 10.345988,
+                lon: 107.084715,
                 address: {
                   street1: "123 fake street",
                   street2: "unit 32",
@@ -155,8 +155,8 @@ export const itineraryModel = t.Object(
               duration: 120,
               price: 50.0,
               location: {
-                lat: "latitude of location",
-                lon: "longitude of location",
+                lat: 10.345988,
+                lon: 107.084715,
                 address: {
                   street1: "123 fake street",
                   street2: "unit 32",
@@ -186,8 +186,8 @@ export const itineraryModel = t.Object(
               duration: 40,
               price: 20.1,
               location: {
-                lat: "latitude of location",
-                lon: "longitude of location",
+                lat: 10.345988,
+                lon: 107.084715,
                 address: {
                   street1: "123 fake street",
                   street2: "unit 32",

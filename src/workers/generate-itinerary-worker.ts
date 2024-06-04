@@ -93,7 +93,7 @@ export function generateItineraryWorker(supabaseClient: DottedSupabase) {
         .single();
 
       if (sched.error) {
-        logger.error("bad data", sched.error);
+        logger.error("Error creating schedule: ", sched.error);
         return;
       }
 
@@ -106,28 +106,93 @@ export function generateItineraryWorker(supabaseClient: DottedSupabase) {
             const {
               name,
               description,
-              type,
               startTime,
               endTime,
               duration,
               price,
+              type,
               location,
             } = item;
 
-            console.log(item);
+            let locId;
 
-            const data = await supabaseClient.from("schedule_items").insert({
-              name: name,
-              description: description,
-              duration: duration,
-              start_time: startTime,
-              end_time: endTime,
-              schedule_id: sched.data.id,
-              schedule_item_type: type,
-              price: price,
-            });
+            if (location && "address" in location) {
+              const { address } = location;
+
+              const addressString = [
+                address.street1,
+                address.street2,
+                address.city,
+                address.state,
+                address.country,
+                address.postalCode,
+              ]
+                .filter((x) => x)
+                .join(", ");
+
+              const hasMatchingAddress = await supabaseClient
+                .from("addresses")
+                .select("*")
+                .match({ address_string: addressString })
+                .single();
+
+              if (!hasMatchingAddress.data) {
+                const loc = await supabaseClient
+                  .from("locations")
+                  .insert({
+                    lat: location.lat,
+                    lon: location.lon,
+                  })
+                  .select()
+                  .single();
+
+                if (loc.error) {
+                  logger.error("Error saving location: ", loc.error);
+                  continue;
+                }
+
+                locId = loc.data.id;
+
+                const addy = await supabaseClient
+                  .from("addresses")
+                  .insert({
+                    address_string: addressString,
+                    city: address.city,
+                    country: address.country,
+                    postal_code: address.postalCode,
+                    state: address.state,
+                    street1: address.street1,
+                    street2: address.street2,
+                    location_id: loc.data.id,
+                  })
+                  .select()
+                  .single();
+
+                if (addy.error) {
+                  logger.error("Error saving address: ", addy.error);
+                  continue;
+                }
+              }
+            }
+
+            const data = await supabaseClient
+              .from("schedule_items")
+              .insert({
+                name: name,
+                description: description,
+                duration: duration,
+                start_time: startTime,
+                end_time: endTime,
+                schedule_id: sched.data.id,
+                price: price,
+                schedule_item_type: type,
+                location_id: locId,
+              })
+              .select()
+              .single();
+
             if (data.error) {
-              logger.error("cant", data.error);
+              logger.error("Error creating schedule_item:", data.error);
             }
           }
         }

@@ -42,9 +42,13 @@ Set up dev environment
 
 1. `bunx supabase login`
 
+### Generate Supabase Migrations
+
+1. `supabase db diff --use-migra -f <migration_file_name>`
+
 ### Generate Supabase Schemas
 
-1. `bunx types:supabase`
+1. `bun types:supabase`
 
 ### Run server
 
