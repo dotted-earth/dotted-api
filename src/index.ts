@@ -12,20 +12,19 @@ import { waitListServices } from "./services/wait-list";
 import { createRedisClient } from "@utils/create-redis-client";
 import { createSupabaseClient } from "@utils/create-supabase-client";
 import { createViatorClient } from "@utils/create-viator-client";
-import { createTursoClient } from "@utils/create-turso-client";
+import { createSQLiteClient } from "@utils/create-sqlite-client";
 
 // supabase real-time subscriptions
 import { supabaseNewItinerarySubscription } from "@subscriptions/itineraries";
 
 import type { GenerateItineraryJobData } from "./types/generate-itinerary-job-data";
-import type { Destination } from "./models/viator-response";
 
 export const redisClient = createRedisClient();
 export const supabaseClient = createSupabaseClient();
-export const tursoClient = createTursoClient();
 export const viatorClient = createViatorClient({
   apiKey: Bun.env.VIATOR_API_KEY,
 });
+export const dottedDb = createSQLiteClient();
 
 // create queues
 export const generateItineraryQueue = new Queue<GenerateItineraryJobData>(
@@ -53,16 +52,6 @@ processSignals.forEach((signal) => {
 const app = new Elysia()
   .use(waitListServices(supabaseClient))
   .listen(Bun.env.PORT, async () => {
-    // const destinations = await viatorClient.getDestinations();
-    // const destinationText = await Bun.file("src/data/destinations.json", {
-    //   type: "application/json",
-    // }).text();
-    // const destinations: Destination[] = JSON.parse(destinationText);
-
-    // for (const destination of destinations) {
-
-    // }
-
     // subscribe to supabase events after external services loaded and server has started
     supabaseNewItinerarySubscription(supabaseClient, generateItineraryQueue);
   });

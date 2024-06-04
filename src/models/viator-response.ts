@@ -1,4 +1,4 @@
-export type ViatorResponseSchema<T> = {
+export type ViatorV1ResponseSchema<T> = {
   errorReference: string | null;
   dateStamp: string | null;
   errorType: string | null;

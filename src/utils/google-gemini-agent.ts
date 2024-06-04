@@ -63,9 +63,9 @@ export class AiAgent {
   runTaskAsync(task: string): Promise<GenerateContentResult> {
     let content = "";
     if (this.outputJson) {
-      content += `Output format should be a JSON and the example should be structured in the following way:\n${JSON.stringify(
-        this.outputJson
-      )}\n`;
+      content += `Output format should ALWAYS be a JSON and the output should be structured like in the following JSON:
+      \n${JSON.stringify(this.outputJson)}\n
+      `;
     }
     return this.llm.generateContent(content + task);
   }

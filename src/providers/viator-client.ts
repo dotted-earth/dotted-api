@@ -1,5 +1,5 @@
 import type {
-  ViatorResponseSchema,
+  ViatorV1ResponseSchema,
   Destination,
   Attraction,
 } from "src/models/viator-response";
@@ -25,7 +25,9 @@ export class ViatorClient {
     const data = await fetch(this._baseUrl + "/v1/taxonomy/destinations", {
       ...this._options,
       method: "get",
-    }).then((res) => res.json() as Promise<ViatorResponseSchema<Destination>>);
+    }).then(
+      (res) => res.json() as Promise<ViatorV1ResponseSchema<Destination>>
+    );
 
     return data;
   }
@@ -39,7 +41,7 @@ export class ViatorClient {
       ...this._options,
       method: "post",
       body: JSON.stringify(reqBody),
-    }).then((res) => res.json() as Promise<ViatorResponseSchema<Attraction>>);
+    }).then((res) => res.json() as Promise<ViatorV1ResponseSchema<Attraction>>);
 
     return data;
   }

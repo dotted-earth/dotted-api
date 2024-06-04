@@ -30,7 +30,7 @@ const main = async () => {
     { name: "Museums" },
     { name: "Beach" },
   ]);
-  await seed.food_allergies([{ name: "Milk" }, { name: "Peanut" }]);
+  await seed.foodAllergies([{ name: "Milk" }, { name: "Peanut" }]);
 
   // TODO - find a way to seed oauth users since we don't use email/passwords
 

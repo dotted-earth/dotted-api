@@ -29,16 +29,36 @@ export function generateItineraryWorker(supabaseClient: DottedSupabase) {
 
       const { destination, length_of_stay, start_date, end_date } = itinerary;
 
+      // need start time, end time, and budget
       const data = await travelAgent.runTaskAsync(
         `Generate a ${length_of_stay}-day itinerary to ${destination} for the dates ${start_date} to ${end_date}.
-         The activities should include: ${recreations
-           .map((r) => r.name)
-           .join(", ")}.
-         Dietary restrictions to include: ${diets.map((d) => d.name).join(", ")}
-         Cuisines to include: ${cuisines.map((c) => c.name).join(", ")}
-         Consider meal options with fool allergies: ${foodAllergies
-           .map((f) => f.name)
-           .join(", ")}
+
+        ${
+          recreations.length
+            ? `The activities should include: ${recreations
+                .map((r) => r.name)
+                .join(", ")}.`
+            : ""
+        }
+        ${
+          diets.length
+            ? `Dietary restrictions to include: ${diets
+                .map((d) => d.name)
+                .join(", ")}.`
+            : ""
+        }
+         ${
+           cuisines.length
+             ? `Cuisines to include: ${cuisines.map((c) => c.name).join(", ")}`
+             : ""
+         }
+         ${
+           foodAllergies.length
+             ? ` Consider meal options with fool allergies: ${foodAllergies
+                 .map((f) => f.name)
+                 .join(", ")}.`
+             : ""
+         }
         `
       );
 
@@ -60,6 +80,23 @@ export function generateItineraryWorker(supabaseClient: DottedSupabase) {
     // TODO - get chat response to return json with destinations and activities field
     // parse through info and create data in the db
     if ("schedule" in itinerary && Array.isArray(itinerary["schedule"])) {
+      const sched = await supabaseClient
+        .from("schedules")
+        .insert({
+          itinerary_id: data.itinerary.id,
+          name: "new itinerary",
+          start_date: data.itinerary.start_date,
+          end_date: data.itinerary.end_date,
+          duration: 90,
+        })
+        .select()
+        .single();
+
+      if (sched.error) {
+        logger.error("bad data", sched.error);
+        return;
+      }
+
       for (const schedule of itinerary["schedule"]) {
         if (
           "scheduleItems" in schedule &&
@@ -76,7 +113,22 @@ export function generateItineraryWorker(supabaseClient: DottedSupabase) {
               price,
               location,
             } = item;
-            // TODO - create schedule items, look up alternatives,
+
+            console.log(item);
+
+            const data = await supabaseClient.from("schedule_items").insert({
+              name: name,
+              description: description,
+              duration: duration,
+              start_time: startTime,
+              end_time: endTime,
+              schedule_id: sched.data.id,
+              schedule_item_type: type,
+              price: price,
+            });
+            if (data.error) {
+              logger.error("cant", data.error);
+            }
           }
         }
       }
