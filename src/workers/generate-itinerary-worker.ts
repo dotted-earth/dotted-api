@@ -38,9 +38,11 @@ export function generateItineraryWorker(supabaseClient: DottedSupabase) {
 
       // need start time, end time, and budget
       const data = await travelAgent.runTaskAsync(
-        `Generate a ${length_of_stay}-day itinerary to ${destination} for the dates ${start_date} to ${end_date} starting and ending at ${accommodation}.
+        `Generate a ${length_of_stay}-day itinerary to ${destination} for the dates ${start_date} to ${end_date}.
 
-        The budget for the whole trip is $${budget}.
+        My accommodations are arranged at ${accommodation}.
+
+        The budget for the whole trip is $${budget} USD.
 
         ${
           recreations.length
