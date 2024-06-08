@@ -27,11 +27,20 @@ export function generateItineraryWorker(supabaseClient: DottedSupabase) {
         outputJson: itineraryModel.examples,
       });
 
-      const { destination, length_of_stay, start_date, end_date } = itinerary;
+      const {
+        destination,
+        length_of_stay,
+        start_date,
+        end_date,
+        budget,
+        accommodation,
+      } = itinerary;
 
       // need start time, end time, and budget
       const data = await travelAgent.runTaskAsync(
-        `Generate a ${length_of_stay}-day itinerary to ${destination} for the dates ${start_date} to ${end_date}.
+        `Generate a ${length_of_stay}-day itinerary to ${destination} for the dates ${start_date} to ${end_date} starting and ending at ${accommodation}.
+
+        The budget for the whole trip is $${budget}.
 
         ${
           recreations.length
@@ -134,9 +143,15 @@ export function generateItineraryWorker(supabaseClient: DottedSupabase) {
                 .from("addresses")
                 .select("*")
                 .match({ address_string: addressString })
-                .single();
+                .maybeSingle();
 
-              if (!hasMatchingAddress.data) {
+              if (hasMatchingAddress.error) {
+                logger.error(
+                  "Matching address error: ",
+                  hasMatchingAddress.error
+                );
+                continue;
+              } else if (!hasMatchingAddress.data) {
                 const loc = await supabaseClient
                   .from("locations")
                   .insert({
@@ -156,13 +171,13 @@ export function generateItineraryWorker(supabaseClient: DottedSupabase) {
                 const addy = await supabaseClient
                   .from("addresses")
                   .insert({
-                    address_string: addressString,
-                    city: address.city,
-                    country: address.country,
-                    postal_code: address.postalCode,
-                    state: address.state,
-                    street1: address.street1,
-                    street2: address.street2,
+                    address_string: addressString ?? "",
+                    city: address.city ?? "",
+                    country: address.country ?? "",
+                    postal_code: address.postalCode ?? "",
+                    state: address.state ?? "",
+                    street1: address.street1 ?? "",
+                    street2: address.street2 ?? "",
                     location_id: loc.data.id,
                   })
                   .select()
@@ -172,6 +187,8 @@ export function generateItineraryWorker(supabaseClient: DottedSupabase) {
                   logger.error("Error saving address: ", addy.error);
                   continue;
                 }
+              } else {
+                locId = hasMatchingAddress.data.id;
               }
             }
 
@@ -206,21 +223,8 @@ export function generateItineraryWorker(supabaseClient: DottedSupabase) {
       .eq("id", data.itinerary.id);
   });
 
-  worker.on("progress", async (job, progress) => {
-    logger.info(
-      `process update ${job.id}: ${
-        typeof progress == "object"
-          ? "message" in progress
-            ? progress.message
-            : "no message"
-          : progress
-      }`
-    );
-  });
-
   worker.on("failed", async (job, returnValue) => {
     const data = job?.data;
-
     if (data) {
       await supabaseClient
         .from("itineraries")
@@ -229,6 +233,7 @@ export function generateItineraryWorker(supabaseClient: DottedSupabase) {
     }
 
     logger.error(`Job ${job?.id} failed`, returnValue);
+    job?.remove();
   });
 
   return worker;
