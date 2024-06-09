@@ -34,13 +34,19 @@ export function generateItineraryWorker(supabaseClient: DottedSupabase) {
         end_date,
         budget,
         accommodation,
+        start_time,
+        end_time,
       } = itinerary;
 
       // need start time, end time, and budget
       const data = await travelAgent.runTaskAsync(
-        `Generate a ${length_of_stay}-day itinerary to ${destination} for the dates ${start_date} to ${end_date}.
+        `Generate a ${length_of_stay}-day itinerary to ${destination} where the start date is ${start_date}, start time is ${start_time} to end date is ${end_date}, and end time is ${end_time}. Make use of the full time allowed. The itinerary MUST be ${length_of_stay} days long.
 
         My accommodations are arranged at ${accommodation}.
+
+        DO NOT include going to and from the airport. Use the accommodation as the starting and ending point in the itinerary but DO NOT include it in the itinerary.
+
+        Each name field WILL be concise and ONLY be the name of the location. DO NOT repeat anything in the description from the name or the within the description itself. The description field should be at least 3 sentences long. ALWAYS suggest a restaurant for meals and NEVER suggest the same place.
 
         The budget for the whole trip is $${budget} USD.
 
@@ -88,14 +94,12 @@ export function generateItineraryWorker(supabaseClient: DottedSupabase) {
     const data = job.data;
     logger.info(`Job ${job.id} complete for itinerary ${data.itinerary.id}`);
 
-    // TODO - get chat response to return json with destinations and activities field
-    // parse through info and create data in the db
     if ("schedule" in itinerary && Array.isArray(itinerary["schedule"])) {
       const sched = await supabaseClient
         .from("schedules")
         .insert({
           itinerary_id: data.itinerary.id,
-          name: "new itinerary",
+          name: `Trip to ${data.itinerary.destination}`,
           start_date: data.itinerary.start_date,
           end_date: data.itinerary.end_date,
           duration: 90,
@@ -105,6 +109,18 @@ export function generateItineraryWorker(supabaseClient: DottedSupabase) {
 
       if (sched.error) {
         logger.error("Error creating schedule: ", sched.error);
+        job.moveToFailed(new Error(sched.error.message), job.token!, true);
+        return;
+      }
+
+      const schedules = itinerary["schedule"];
+
+      if (schedules.length != data.itinerary.length_of_stay) {
+        job.moveToFailed(
+          new Error("Generated schedule length does match length of stay"),
+          job.token!,
+          true
+        );
         return;
       }
 
@@ -152,7 +168,12 @@ export function generateItineraryWorker(supabaseClient: DottedSupabase) {
                   "Matching address error: ",
                   hasMatchingAddress.error
                 );
-                continue;
+                job.moveToFailed(
+                  new Error(hasMatchingAddress.error.message),
+                  job.token!,
+                  true
+                );
+                return;
               } else if (!hasMatchingAddress.data) {
                 const loc = await supabaseClient
                   .from("locations")
@@ -164,8 +185,13 @@ export function generateItineraryWorker(supabaseClient: DottedSupabase) {
                   .single();
 
                 if (loc.error) {
-                  logger.error("Error saving location: ", loc.error);
-                  continue;
+                  logger.error("Error saving location: ", loc.error, loc);
+                  job.moveToFailed(
+                    new Error(loc.error.message),
+                    job.token!,
+                    true
+                  );
+                  return;
                 }
 
                 locId = loc.data.id;
@@ -186,8 +212,13 @@ export function generateItineraryWorker(supabaseClient: DottedSupabase) {
                   .single();
 
                 if (addy.error) {
-                  logger.error("Error saving address: ", addy.error);
-                  continue;
+                  logger.error("Error saving address: ", addy.error, address);
+                  job.moveToFailed(
+                    new Error(addy.error.message),
+                    job.token!,
+                    true
+                  );
+                  return;
                 }
               } else {
                 locId = hasMatchingAddress.data.id;
@@ -211,7 +242,9 @@ export function generateItineraryWorker(supabaseClient: DottedSupabase) {
               .single();
 
             if (data.error) {
-              logger.error("Error creating schedule_item:", data.error);
+              logger.error("Error creating schedule_item:", data.error, item);
+              job.moveToFailed(new Error(data.error.message), job.token!, true);
+              return;
             }
           }
         }

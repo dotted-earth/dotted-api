@@ -168,11 +168,13 @@ export type Database = {
           created_at: string
           destination: string
           end_date: string
+          end_time: string
           id: number
           itinerary_status: Database["public"]["Enums"]["itinerary_status"]
           length_of_stay: number
           media_id: number | null
           start_date: string
+          start_time: string
           user_id: string
         }
         Insert: {
@@ -181,11 +183,13 @@ export type Database = {
           created_at?: string
           destination: string
           end_date: string
+          end_time: string
           id?: number
           itinerary_status?: Database["public"]["Enums"]["itinerary_status"]
           length_of_stay: number
           media_id?: number | null
           start_date: string
+          start_time: string
           user_id: string
         }
         Update: {
@@ -194,11 +198,13 @@ export type Database = {
           created_at?: string
           destination?: string
           end_date?: string
+          end_time?: string
           id?: number
           itinerary_status?: Database["public"]["Enums"]["itinerary_status"]
           length_of_stay?: number
           media_id?: number | null
           start_date?: string
+          start_time?: string
           user_id?: string
         }
         Relationships: [
@@ -592,7 +598,11 @@ export type Database = {
         | "in_progress"
         | "completed"
       schedule_intensity: "relaxed" | "moderate" | "active"
-      schedule_item_type: "accomodation" | "transporation" | "meal" | "activity"
+      schedule_item_type:
+        | "accommodation"
+        | "transportation"
+        | "meal"
+        | "activity"
       schedule_length: "quarter_day" | "half_day" | "full_day" | "whole_day"
     }
     CompositeTypes: {

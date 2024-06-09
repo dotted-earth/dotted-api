@@ -62,7 +62,7 @@ export function handleNewItineraryCreated(
         }
       );
 
-      logger.info(`generate itinerary job ${job.id} created`);
+      logger.info(`Generate itinerary job ${job.id} created`);
     } catch (err) {
       if (err instanceof Error) {
         logger.error(err.message, err);

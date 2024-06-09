@@ -116,7 +116,7 @@ export const itineraryModel = t.Object(
           date: new Date(),
           scheduleItems: [
             {
-              name: "Breakfast at Tiffany's",
+              name: "Tiffany's",
               type: "meal",
               description: "Eat waffle and chickens at this famous location",
               startTime: new Date(2024, 4, 17, 8, 0, 0).toISOString(),
@@ -135,16 +135,6 @@ export const itineraryModel = t.Object(
                   postalCode: "11029",
                 },
               },
-            },
-            {
-              name: "Share ride",
-              type: "transportation",
-              description: "Commute to Opera House",
-              startTime: new Date(2024, 4, 17, 9, 15, 0).toISOString(),
-              endTime: new Date(2024, 4, 17, 9, 45, 0).toISOString(),
-              duration: 30,
-              price: 10.0,
-              location: null,
             },
             {
               name: "Opera House",
@@ -168,17 +158,7 @@ export const itineraryModel = t.Object(
               },
             },
             {
-              name: "Walk to Outback Steakhouse",
-              type: "transportation",
-              description: "Walk to Outback Steakhouse",
-              startTime: new Date(2024, 4, 17, 12, 0, 0).toISOString(),
-              endTime: new Date(2024, 4, 17, 12, 15, 0).toISOString(),
-              duration: 15,
-              price: null,
-              location: null,
-            },
-            {
-              name: "Lunch at Outback",
+              name: "Outback Steakhouse",
               type: "meal",
               description: "Eat the famous steak",
               startTime: new Date(2024, 4, 17, 12, 20, 0).toISOString(),
