@@ -8,6 +8,7 @@ declare module "bun" {
     SUPABASE_SERVICE_ROLE_KEY: string;
     REDIS_HOST: string;
     GOOGLE_GEMINI_AI_KEY: string;
+    GOOGLE_MAPS_API_KEY: string;
     VIATOR_API_KEY: string;
   }
 }

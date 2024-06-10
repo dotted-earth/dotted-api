@@ -2,17 +2,19 @@ import { logger } from "@utils/logger";
 import { Worker } from "bullmq";
 import { QUEUE_NAME, TASK } from "@utils/constants";
 import { createRedisClient } from "@utils/create-redis-client";
+// import { googleMapsClient } from "@utils/google-maps-client";
 import { AiAgent } from "@utils/google-gemini-agent";
 import { JsonOutputParser } from "@langchain/core/output_parsers";
-import { itineraryModel } from "src/models/itinerary-model";
+import { itineraryExample } from "src/models/itinerary-model";
 
 import type { GenerateItineraryJobData } from "src/types/generate-itinerary-job-data";
+import type { GeneratedScheduleItem } from "src/models/itinerary-model";
 import type { DottedSupabase } from "types";
 
 export function generateItineraryWorker(supabaseClient: DottedSupabase) {
   const worker = new Worker<
     GenerateItineraryJobData,
-    Record<string, any>,
+    GeneratedScheduleItem[],
     typeof TASK.generate_itinerary
   >(
     QUEUE_NAME.itinerary,
@@ -24,7 +26,7 @@ export function generateItineraryWorker(supabaseClient: DottedSupabase) {
       const travelAgent = new AiAgent({
         model: "gemini-1.5-pro",
         role: "You are an expert travel agent",
-        outputJson: itineraryModel.examples,
+        outputJson: itineraryExample,
       });
 
       const {
@@ -34,13 +36,11 @@ export function generateItineraryWorker(supabaseClient: DottedSupabase) {
         end_date,
         budget,
         accommodation,
-        start_time,
-        end_time,
       } = itinerary;
 
       // need start time, end time, and budget
       const data = await travelAgent.runTaskAsync(
-        `Generate a ${length_of_stay}-day itinerary to ${destination} where the start date is ${start_date}, start time is ${start_time} to end date is ${end_date}, and end time is ${end_time}. Make use of the full time allowed. The itinerary MUST be ${length_of_stay} days long.
+        `Generate a ${length_of_stay}-day itinerary to ${destination} where the start date is ${start_date} to end date is ${end_date}. Make use of the full time allowed. The itinerary MUST be ${length_of_stay} days long.
 
         My accommodations are arranged at ${accommodation}.
 
@@ -83,180 +83,176 @@ export function generateItineraryWorker(supabaseClient: DottedSupabase) {
       const parser = new JsonOutputParser();
       const itineraryDraft = await parser.parse(data.response.text());
 
-      return itineraryDraft;
+      return itineraryDraft as GeneratedScheduleItem[];
     },
     {
       connection: createRedisClient({ maxRetriesPerRequest: null }),
     }
   );
 
-  worker.on("completed", async (job, itinerary) => {
-    const data = job.data;
-    logger.info(`Job ${job.id} complete for itinerary ${data.itinerary.id}`);
+  worker.on(
+    "completed",
+    async (job, generatedScheduleItems: GeneratedScheduleItem[]) => {
+      const data = job.data;
+      logger.info(`Job ${job.id} complete for itinerary ${data.itinerary.id}`);
 
-    if ("schedule" in itinerary && Array.isArray(itinerary["schedule"])) {
-      const sched = await supabaseClient
-        .from("schedules")
-        .insert({
-          itinerary_id: data.itinerary.id,
-          name: `Trip to ${data.itinerary.destination}`,
-          start_date: data.itinerary.start_date,
-          end_date: data.itinerary.end_date,
-          duration: 90,
-        })
-        .select()
-        .single();
-
-      if (sched.error) {
-        logger.error("Error creating schedule: ", sched.error);
-        job.moveToFailed(new Error(sched.error.message), job.token!, true);
-        return;
+      if (!Array.isArray(generatedScheduleItems)) {
+        const errorMessage = "Generated schedule items is not an array";
+        throw new Error(errorMessage);
       }
 
-      const schedules = itinerary["schedule"];
+      // const daysGenerated = new Set<string>();
+      // for (const scheduleItem of generatedScheduleItems) {
+      //   daysGenerated.add(dayStart);
+      // }
 
-      if (schedules.length != data.itinerary.length_of_stay) {
-        job.moveToFailed(
-          new Error("Generated schedule length does match length of stay"),
-          job.token!,
-          true
-        );
-        return;
-      }
+      // if (daysGenerated.size != data.itinerary.length_of_stay) {
+      //   throw new Error("Generated schedule length does match length of stay");
+      // }
 
-      for (const schedule of itinerary["schedule"]) {
-        if (
-          "scheduleItems" in schedule &&
-          Array.isArray(schedule["scheduleItems"])
-        ) {
-          for (const item of schedule["scheduleItems"]) {
-            const {
-              name,
-              description,
-              startTime,
-              endTime,
-              duration,
-              price,
-              type,
-              location,
-            } = item;
+      // get location data for accommodation and add as a schedule item
+      // try {
+      //   const accommodationPlace = await googleMapsClient.findPlaceFromText({
+      //     params: {
+      //       key: Bun.env.GOOGLE_MAPS_API_KEY,
+      //       input: "",
+      //       inputtype: PlaceInputType.textQuery,
+      //     },
+      //   });
 
-            let locId;
+      //   console.log(accommodationPlace);
+      // } catch (err) {
+      //   throw err;
+      // }
 
-            if (location && "address" in location) {
-              const { address } = location;
+      for (const scheduleItem of generatedScheduleItems) {
+        const {
+          name,
+          description,
+          startTime,
+          endTime,
+          duration,
+          price,
+          type,
+          location,
+        } = scheduleItem;
 
-              const addressString = [
-                address.street1,
-                address.street2,
-                address.city,
-                address.state,
-                address.country,
-                address.postalCode,
-              ]
-                .filter((x) => x)
-                .join(", ");
+        let locId: number;
+        let addressId: number;
 
-              const hasMatchingAddress = await supabaseClient
-                .from("addresses")
-                .select("*")
-                .match({ address_string: addressString })
-                .maybeSingle();
+        if (location && "address" in location) {
+          const { address } = location;
 
-              if (hasMatchingAddress.error) {
-                logger.error(
-                  "Matching address error: ",
-                  hasMatchingAddress.error
-                );
-                job.moveToFailed(
-                  new Error(hasMatchingAddress.error.message),
-                  job.token!,
-                  true
-                );
-                return;
-              } else if (!hasMatchingAddress.data) {
-                const loc = await supabaseClient
-                  .from("locations")
-                  .insert({
-                    lat: location.lat,
-                    lon: location.lon,
-                  })
-                  .select()
-                  .single();
+          const addressString = [
+            address.street1,
+            address.street2,
+            address.city,
+            address.state,
+            address.country,
+            address.postalCode,
+          ]
+            .filter((x) => x)
+            .join(", ");
 
-                if (loc.error) {
-                  logger.error("Error saving location: ", loc.error, loc);
-                  job.moveToFailed(
-                    new Error(loc.error.message),
-                    job.token!,
-                    true
-                  );
-                  return;
-                }
+          const hasMatchingAddress = await supabaseClient
+            .from("addresses")
+            .select("*")
+            .match({ address_string: addressString })
+            .maybeSingle();
 
-                locId = loc.data.id;
-
-                const addy = await supabaseClient
-                  .from("addresses")
-                  .insert({
-                    address_string: addressString ?? "",
-                    city: address.city ?? "",
-                    country: address.country ?? "",
-                    postal_code: address.postalCode ?? "",
-                    state: address.state ?? "",
-                    street1: address.street1 ?? "",
-                    street2: address.street2 ?? "",
-                    location_id: loc.data.id,
-                  })
-                  .select()
-                  .single();
-
-                if (addy.error) {
-                  logger.error("Error saving address: ", addy.error, address);
-                  job.moveToFailed(
-                    new Error(addy.error.message),
-                    job.token!,
-                    true
-                  );
-                  return;
-                }
-              } else {
-                locId = hasMatchingAddress.data.id;
-              }
-            }
-
-            const data = await supabaseClient
-              .from("schedule_items")
+          if (hasMatchingAddress.error) {
+            throw new Error(
+              `Matching address error: ${hasMatchingAddress.error.message}`
+            );
+          } else if (!hasMatchingAddress.data) {
+            const loc = await supabaseClient
+              .from("locations")
               .insert({
-                name: name,
-                description: description,
-                duration: duration,
-                start_time: startTime,
-                end_time: endTime,
-                schedule_id: sched.data.id,
-                price: price,
-                schedule_item_type: type,
-                location_id: locId,
+                lat: location.lat,
+                lon: location.lon,
               })
               .select()
               .single();
 
-            if (data.error) {
-              logger.error("Error creating schedule_item:", data.error, item);
-              job.moveToFailed(new Error(data.error.message), job.token!, true);
-              return;
+            if (loc.error) {
+              throw new Error(`Error saving location: ${loc.error.message}`);
             }
+
+            locId = loc.data.id;
+
+            const addressData = await supabaseClient
+              .from("addresses")
+              .insert({
+                street1: address.street1,
+                street2: address.street2 ?? "",
+                city: address.city,
+                state: address.state ?? "",
+                country: address.country,
+                postal_code: address.postalCode ?? "",
+                address_string: addressString ?? "",
+                location_id: loc.data.id,
+              })
+              .select()
+              .single();
+
+            if (addressData.error) {
+              throw new Error(
+                `Error saving address: ${addressData.error.message}`
+              );
+            }
+
+            addressId = addressData.data.id;
+          } else {
+            addressId = hasMatchingAddress.data.id;
+            locId = hasMatchingAddress.data.location_id;
+          }
+
+          const pointOfInterestsData = await supabaseClient
+            .from("point_of_interests")
+            .insert({
+              name: name,
+              description: description,
+              location_id: locId,
+              address_id: addressId,
+            })
+            .select()
+            .single();
+
+          if (pointOfInterestsData.error) {
+            throw new Error(
+              `Error saving point_of_interests: ${pointOfInterestsData.error.message}`
+            );
+          }
+
+          const scheduleItemData = await supabaseClient
+            .from("schedule_items")
+            .insert({
+              itinerary_id: data.itinerary.id,
+              duration: duration,
+              start_time: startTime,
+              end_time: endTime,
+              schedule_item_type: type,
+              point_of_interest_id: pointOfInterestsData.data.id,
+              price: price != null ? parseFloat(price.toFixed(2)) : null,
+            });
+
+          // TODO: Find media pictures for schedule item
+
+          if (scheduleItemData.error) {
+            throw new Error(
+              `Error saving schedule_items: ${scheduleItemData.error.message}`
+            );
           }
         }
       }
-    }
 
-    // update the itinerary status to draft mode
-    await supabaseClient
-      .from("itineraries")
-      .update({ itinerary_status: "draft" })
-      .eq("id", data.itinerary.id);
-  });
+      // update the itinerary status to draft mode
+      await supabaseClient
+        .from("itineraries")
+        .update({ itinerary_status: "draft" })
+        .eq("id", data.itinerary.id);
+    }
+  );
 
   worker.on("failed", async (job, returnValue) => {
     const data = job?.data;
@@ -266,7 +262,6 @@ export function generateItineraryWorker(supabaseClient: DottedSupabase) {
         .update({ itinerary_status: "ai_failure" })
         .eq("id", data.itinerary.id);
     }
-
     logger.error(`Job ${job?.id} failed`, returnValue);
     job?.remove();
   });
