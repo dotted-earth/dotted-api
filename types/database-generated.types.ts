@@ -17,9 +17,9 @@ export type Database = {
           created_at: string
           id: number
           location_id: number
-          postal_code: string
-          state: string
-          street1: string
+          postal_code: string | null
+          state: string | null
+          street1: string | null
           street2: string | null
         }
         Insert: {
@@ -29,9 +29,9 @@ export type Database = {
           created_at?: string
           id?: number
           location_id: number
-          postal_code: string
-          state: string
-          street1: string
+          postal_code?: string | null
+          state?: string | null
+          street1?: string | null
           street2?: string | null
         }
         Update: {
@@ -41,9 +41,9 @@ export type Database = {
           created_at?: string
           id?: number
           location_id?: number
-          postal_code?: string
-          state?: string
-          street1?: string
+          postal_code?: string | null
+          state?: string | null
+          street1?: string | null
           street2?: string | null
         }
         Relationships: [
@@ -267,7 +267,22 @@ export type Database = {
           location_id?: number
           name?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "public_point_of_interests_address_id_fkey"
+            columns: ["address_id"]
+            isOneToOne: false
+            referencedRelation: "addresses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "public_point_of_interests_location_id_fkey"
+            columns: ["location_id"]
+            isOneToOne: false
+            referencedRelation: "locations"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       point_of_interests_media: {
         Row: {

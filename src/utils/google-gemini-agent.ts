@@ -44,7 +44,7 @@ export class AiAgent {
         tools: tools,
         toolConfig: toolsConfig,
         generationConfig: {
-          temperature: 0.5,
+          temperature: 0.8,
         },
       },
       outputJson
@@ -65,8 +65,6 @@ export class AiAgent {
     if (this.outputJson) {
       content += `Output format should ALWAYS be a JSON and the output should be structured like in the following JSON:
       \n${JSON.stringify(this.outputJson)}\n
-
-      A schedule_item type can ONLY be one of: meal, activity, or transportation.
       `;
     }
     return this.llm.generateContent(content + task);

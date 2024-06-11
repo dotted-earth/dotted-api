@@ -4,7 +4,7 @@ import type {
   Attraction,
 } from "src/models/viator-response";
 
-export class ViatorClient {
+export class ViatorProvider {
   private _baseUrl =
     Bun.env.NODE_ENV === "development"
       ? "https://api.sandbox.viator.com/partner"

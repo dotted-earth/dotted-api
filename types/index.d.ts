@@ -10,6 +10,7 @@ declare module "bun" {
     GOOGLE_GEMINI_AI_KEY: string;
     GOOGLE_MAPS_API_KEY: string;
     VIATOR_API_KEY: string;
+    TRIP_ADVISOR_CONTENT_API_KEY: string;
   }
 }
 

@@ -1,28 +1,30 @@
-interface GeneratedAddress {
-  street1: string;
-  street2?: string;
-  city: string;
-  state?: string;
-  country: string;
-  postalCode?: string;
-}
+import { z } from "zod";
 
-interface GeneratedLocation {
-  lat: number;
-  lon: number;
-  address: GeneratedAddress;
-}
+const schemaScheduleItem = z.object({
+  name: z.string(),
+  type: z.enum(["meal", "activity", "transportation"]),
+  description: z.string(),
+  startTime: z.string().datetime(),
+  endTime: z.string().datetime(),
+  duration: z.number().positive().int(),
+  price: z.number().gte(0).nullable(),
+  location: z.object({
+    lat: z.number(),
+    lon: z.number(),
+    address: z.object({
+      street1: z.string(),
+      street2: z.string().nullable(),
+      city: z.string(),
+      state: z.string().nullable(),
+      country: z.string(),
+      postalCode: z.string().nullable(),
+    }),
+  }),
+});
 
-export interface GeneratedScheduleItem {
-  name: string;
-  type: "meal" | "accommodation" | "activity" | "transportation";
-  description: string;
-  startTime: string;
-  endTime: string;
-  duration: number;
-  price?: number;
-  location: GeneratedLocation;
-}
+export type GeneratedScheduleItem = z.infer<typeof schemaScheduleItem>;
+
+export const schemaGeneratedScheduleItemValidator = z.array(schemaScheduleItem);
 
 export const itineraryExample: GeneratedScheduleItem[] = [
   {

@@ -2,10 +2,12 @@ import { logger } from "@utils/logger";
 import { Worker } from "bullmq";
 import { QUEUE_NAME, TASK } from "@utils/constants";
 import { createRedisClient } from "@utils/create-redis-client";
-// import { googleMapsClient } from "@utils/google-maps-client";
 import { AiAgent } from "@utils/google-gemini-agent";
 import { JsonOutputParser } from "@langchain/core/output_parsers";
-import { itineraryExample } from "src/models/itinerary-model";
+import {
+  itineraryExample,
+  schemaGeneratedScheduleItemValidator,
+} from "src/models/itinerary-model";
 
 import type { GenerateItineraryJobData } from "src/types/generate-itinerary-job-data";
 import type { GeneratedScheduleItem } from "src/models/itinerary-model";
@@ -42,13 +44,19 @@ export function generateItineraryWorker(supabaseClient: DottedSupabase) {
       const data = await travelAgent.runTaskAsync(
         `Generate a ${length_of_stay}-day itinerary to ${destination} where the start date is ${start_date} to end date is ${end_date}. Make use of the full time allowed. The itinerary MUST be ${length_of_stay} days long.
 
-        My accommodations are arranged at ${accommodation}.
+        My accommodations are arranged at ${accommodation}. The budget for the whole trip is $${budget} USD.
 
         DO NOT include going to and from the airport. Use the accommodation as the starting and ending point in the itinerary but DO NOT include it in the itinerary.
+        DO NOT repeat anything in the description from the name or the within the description itself.
+        ALWAYS provide 3 meals a day if time is allowed.
+        NEVER suggest the same restaurant in all of the itinerary.
+        ENSURE that the restaurant is open for business.
+        Each name field WILL be concise and ONLY be the name of the location.
+        The description field should be at least 3 sentences long.
 
-        Each name field WILL be concise and ONLY be the name of the location. DO NOT repeat anything in the description from the name or the within the description itself. The description field should be at least 3 sentences long. ALWAYS suggest a restaurant for meals and NEVER suggest the same place.
+        A schedule_item type can ONLY be one of: meal or activity.
 
-        The budget for the whole trip is $${budget} USD.
+        The schedule items should be in chronological order.
 
         ${
           recreations.length
@@ -83,7 +91,7 @@ export function generateItineraryWorker(supabaseClient: DottedSupabase) {
       const parser = new JsonOutputParser();
       const itineraryDraft = await parser.parse(data.response.text());
 
-      return itineraryDraft as GeneratedScheduleItem[];
+      return schemaGeneratedScheduleItemValidator.parse(itineraryDraft);
     },
     {
       connection: createRedisClient({ maxRetriesPerRequest: null }),
@@ -96,34 +104,7 @@ export function generateItineraryWorker(supabaseClient: DottedSupabase) {
       const data = job.data;
       logger.info(`Job ${job.id} complete for itinerary ${data.itinerary.id}`);
 
-      if (!Array.isArray(generatedScheduleItems)) {
-        const errorMessage = "Generated schedule items is not an array";
-        throw new Error(errorMessage);
-      }
-
-      // const daysGenerated = new Set<string>();
-      // for (const scheduleItem of generatedScheduleItems) {
-      //   daysGenerated.add(dayStart);
-      // }
-
-      // if (daysGenerated.size != data.itinerary.length_of_stay) {
-      //   throw new Error("Generated schedule length does match length of stay");
-      // }
-
-      // get location data for accommodation and add as a schedule item
-      // try {
-      //   const accommodationPlace = await googleMapsClient.findPlaceFromText({
-      //     params: {
-      //       key: Bun.env.GOOGLE_MAPS_API_KEY,
-      //       input: "",
-      //       inputtype: PlaceInputType.textQuery,
-      //     },
-      //   });
-
-      //   console.log(accommodationPlace);
-      // } catch (err) {
-      //   throw err;
-      // }
+      // TODO - get location data for accommodation and add as a schedule item
 
       for (const scheduleItem of generatedScheduleItems) {
         const {
@@ -140,7 +121,7 @@ export function generateItineraryWorker(supabaseClient: DottedSupabase) {
         let locId: number;
         let addressId: number;
 
-        if (location && "address" in location) {
+        if (location && location.address) {
           const { address } = location;
 
           const addressString = [
@@ -151,7 +132,7 @@ export function generateItineraryWorker(supabaseClient: DottedSupabase) {
             address.country,
             address.postalCode,
           ]
-            .filter((x) => x)
+            .filter((x) => Boolean(x))
             .join(", ");
 
           const hasMatchingAddress = await supabaseClient
@@ -184,12 +165,12 @@ export function generateItineraryWorker(supabaseClient: DottedSupabase) {
               .from("addresses")
               .insert({
                 street1: address.street1,
-                street2: address.street2 ?? "",
+                street2: address.street2,
                 city: address.city,
-                state: address.state ?? "",
+                state: address.state,
                 country: address.country,
-                postal_code: address.postalCode ?? "",
-                address_string: addressString ?? "",
+                postal_code: address.postalCode,
+                address_string: addressString,
                 location_id: loc.data.id,
               })
               .select()
