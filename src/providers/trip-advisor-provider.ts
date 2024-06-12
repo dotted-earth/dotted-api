@@ -29,10 +29,7 @@ export class TripAdvisorProvider {
     radius?: number;
     radiusUnit?: string;
     language?: string;
-  }): Promise<TripAdvisorResponse<TripAdvisorLocationSearch>> {
-    console.log(
-      `${this._baseUrl}/location/search${this._makeQueryParams(params)}`
-    );
+  }): Promise<TripAdvisorResponse<TripAdvisorLocationSearch[]>> {
     return fetch(
       `${this._baseUrl}/location/search${this._makeQueryParams(params)}`,
       {
@@ -42,7 +39,7 @@ export class TripAdvisorProvider {
       }
     ).then(
       (res) =>
-        res.json() as Promise<TripAdvisorResponse<TripAdvisorLocationSearch>>
+        res.json() as Promise<TripAdvisorResponse<TripAdvisorLocationSearch[]>>
     );
   }
 

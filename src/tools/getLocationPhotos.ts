@@ -1,33 +1,23 @@
 import { tripAdvisorClient } from "src";
+import { FunctionDeclarationSchemaType } from "@google/generative-ai";
+import type { FunctionDeclaration } from "@google/generative-ai";
 
-export const searchLocationFunctionDeclaration = {
-  name: "searchLocation",
+export const getLocationPhotosFunctionDeclaration: FunctionDeclaration = {
+  name: "getLocationPhotos",
+  description: "Search for Trip Advisors photos using the location_id",
   parameters: {
-    type: "OBJECT",
-    description: "Get the photos from a location",
+    type: FunctionDeclarationSchemaType.OBJECT,
+    description: "The query params to retrieve photos",
     properties: {
-      searchQuery: {
-        type: "STRING",
-        description: "The name of the location",
-      },
-      latLong: {
-        type: "STRING",
-        description:
-          'The latitude and longitude of the location - eg. "42.3455,-71.10767"',
-      },
-      address: {
-        type: "STRING",
-        description: "The address of the location",
+      locationId: {
+        type: FunctionDeclarationSchemaType.INTEGER,
+        description: "The location_id",
       },
     },
-    required: ["searchQuery"],
+    required: ["locationId"],
   },
 };
 
-export function searchLocation(params: {
-  searchQuery: string;
-  latLong?: string;
-  address?: string;
-}) {
-  return tripAdvisorClient.searchLocation(params);
-}
+export const getLocationPhotos = ({ locationId }: { locationId: number }) => {
+  return tripAdvisorClient.getLocationPhotos(locationId);
+};

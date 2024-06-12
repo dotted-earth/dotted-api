@@ -1,5 +1,4 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
-
 import type {
   FunctionDeclarationsTool,
   GenerateContentResult,
@@ -60,11 +59,16 @@ export class AiAgent {
     this.outputJson = outputJson;
   }
 
+  get agent() {
+    return this.llm;
+  }
+
   runTaskAsync(task: string): Promise<GenerateContentResult> {
     let content = "";
     if (this.outputJson) {
       content += `Output format should ALWAYS be a JSON and the output should be structured like in the following JSON:
       \n${JSON.stringify(this.outputJson)}\n
+      THIS EXAMPLE JSON SHOULD NEVER BE IN THE OUTPUT.
       `;
     }
     return this.llm.generateContent(content + task);
