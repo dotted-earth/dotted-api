@@ -1,5 +1,4 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
-
 import type {
   FunctionDeclarationsTool,
   GenerateContentResult,
@@ -44,7 +43,9 @@ export class AiAgent {
         tools: tools,
         toolConfig: toolsConfig,
         generationConfig: {
-          temperature: 0.5,
+          temperature: 0.8,
+          topP: 0.5,
+          topK: 10,
         },
       },
       outputJson
@@ -60,13 +61,16 @@ export class AiAgent {
     this.outputJson = outputJson;
   }
 
+  get agent() {
+    return this.llm;
+  }
+
   runTaskAsync(task: string): Promise<GenerateContentResult> {
     let content = "";
     if (this.outputJson) {
       content += `Output format should ALWAYS be a JSON and the output should be structured like in the following JSON:
       \n${JSON.stringify(this.outputJson)}\n
-
-      A schedule_item type can ONLY be one of: meal, activity, or transportation.
+      THIS EXAMPLE JSON SHOULD NEVER BE IN THE OUTPUT.
       `;
     }
     return this.llm.generateContent(content + task);

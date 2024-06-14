@@ -9,6 +9,7 @@ declare module "bun" {
     REDIS_HOST: string;
     GOOGLE_GEMINI_AI_KEY: string;
     VIATOR_API_KEY: string;
+    TRIP_ADVISOR_CONTENT_API_KEY: string;
   }
 }
 

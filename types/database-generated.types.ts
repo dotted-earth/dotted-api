@@ -17,8 +17,8 @@ export type Database = {
           created_at: string
           id: number
           location_id: number
-          postal_code: string
-          state: string
+          postal_code: string | null
+          state: string | null
           street1: string
           street2: string | null
         }
@@ -29,8 +29,8 @@ export type Database = {
           created_at?: string
           id?: number
           location_id: number
-          postal_code: string
-          state: string
+          postal_code?: string | null
+          state?: string | null
           street1: string
           street2?: string | null
         }
@@ -41,8 +41,8 @@ export type Database = {
           created_at?: string
           id?: number
           location_id?: number
-          postal_code?: string
-          state?: string
+          postal_code?: string | null
+          state?: string | null
           street1?: string
           street2?: string | null
         }
@@ -55,27 +55,6 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
-      }
-      budget: {
-        Row: {
-          budget_type: Database["public"]["Enums"]["budget_type"]
-          created_at: string
-          id: number
-          max: number
-        }
-        Insert: {
-          budget_type?: Database["public"]["Enums"]["budget_type"]
-          created_at?: string
-          id?: number
-          max: number
-        }
-        Update: {
-          budget_type?: Database["public"]["Enums"]["budget_type"]
-          created_at?: string
-          id?: number
-          max?: number
-        }
-        Relationships: []
       }
       cuisines: {
         Row: {
@@ -168,13 +147,11 @@ export type Database = {
           created_at: string
           destination: string
           end_date: string
-          end_time: string
           id: number
           itinerary_status: Database["public"]["Enums"]["itinerary_status"]
           length_of_stay: number
           media_id: number | null
           start_date: string
-          start_time: string
           user_id: string
         }
         Insert: {
@@ -183,13 +160,11 @@ export type Database = {
           created_at?: string
           destination: string
           end_date: string
-          end_time: string
           id?: number
           itinerary_status?: Database["public"]["Enums"]["itinerary_status"]
           length_of_stay: number
           media_id?: number | null
           start_date: string
-          start_time: string
           user_id: string
         }
         Update: {
@@ -198,13 +173,11 @@ export type Database = {
           created_at?: string
           destination?: string
           end_date?: string
-          end_time?: string
           id?: number
           itinerary_status?: Database["public"]["Enums"]["itinerary_status"]
           length_of_stay?: number
           media_id?: number | null
           start_date?: string
-          start_time?: string
           user_id?: string
         }
         Relationships: [
@@ -252,19 +225,100 @@ export type Database = {
         Row: {
           created_at: string
           id: number
+          media_type: Database["public"]["Enums"]["media_type"]
           url: string
         }
         Insert: {
           created_at?: string
           id?: number
+          media_type: Database["public"]["Enums"]["media_type"]
           url: string
         }
         Update: {
           created_at?: string
           id?: number
+          media_type?: Database["public"]["Enums"]["media_type"]
           url?: string
         }
         Relationships: []
+      }
+      point_of_interests: {
+        Row: {
+          address_id: number
+          created_at: string
+          description: string
+          id: number
+          location_id: number
+          name: string
+        }
+        Insert: {
+          address_id: number
+          created_at?: string
+          description: string
+          id?: number
+          location_id: number
+          name: string
+        }
+        Update: {
+          address_id?: number
+          created_at?: string
+          description?: string
+          id?: number
+          location_id?: number
+          name?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "public_point_of_interests_address_id_fkey"
+            columns: ["address_id"]
+            isOneToOne: false
+            referencedRelation: "addresses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "public_point_of_interests_location_id_fkey"
+            columns: ["location_id"]
+            isOneToOne: false
+            referencedRelation: "locations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      point_of_interests_media: {
+        Row: {
+          created_at: string
+          id: number
+          media_id: number
+          point_of_interest_id: number
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          media_id: number
+          point_of_interest_id: number
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          media_id?: number
+          point_of_interest_id?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "public_point_of_interests_media_point_of_interest_id_fkey"
+            columns: ["point_of_interest_id"]
+            isOneToOne: false
+            referencedRelation: "point_of_interests"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "public_schedule_item_media_media_id_fkey"
+            columns: ["media_id"]
+            isOneToOne: false
+            referencedRelation: "media"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       profiles: {
         Row: {
@@ -328,97 +382,50 @@ export type Database = {
       schedule_items: {
         Row: {
           created_at: string
-          description: string
           duration: number
-          end_time: string
+          end_time: string | null
           id: number
-          location_id: number | null
-          name: string
+          itinerary_id: number
+          point_of_interest_id: number
           price: number | null
-          schedule_id: number
           schedule_item_type: Database["public"]["Enums"]["schedule_item_type"]
-          start_time: string
+          start_time: string | null
         }
         Insert: {
           created_at?: string
-          description: string
           duration: number
-          end_time: string
+          end_time?: string | null
           id?: number
-          location_id?: number | null
-          name: string
+          itinerary_id: number
+          point_of_interest_id: number
           price?: number | null
-          schedule_id: number
           schedule_item_type: Database["public"]["Enums"]["schedule_item_type"]
-          start_time: string
+          start_time?: string | null
         }
         Update: {
           created_at?: string
-          description?: string
           duration?: number
-          end_time?: string
-          id?: number
-          location_id?: number | null
-          name?: string
-          price?: number | null
-          schedule_id?: number
-          schedule_item_type?: Database["public"]["Enums"]["schedule_item_type"]
-          start_time?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "schedule_items_location_id_fkey"
-            columns: ["location_id"]
-            isOneToOne: false
-            referencedRelation: "locations"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "schedule_items_schedule_id_fkey"
-            columns: ["schedule_id"]
-            isOneToOne: false
-            referencedRelation: "schedules"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      schedules: {
-        Row: {
-          created_at: string
-          description: string | null
-          duration: number
-          end_date: string
-          id: number
-          itinerary_id: number
-          name: string
-          start_date: string
-        }
-        Insert: {
-          created_at?: string
-          description?: string | null
-          duration: number
-          end_date: string
-          id?: number
-          itinerary_id: number
-          name: string
-          start_date: string
-        }
-        Update: {
-          created_at?: string
-          description?: string | null
-          duration?: number
-          end_date?: string
+          end_time?: string | null
           id?: number
           itinerary_id?: number
-          name?: string
-          start_date?: string
+          point_of_interest_id?: number
+          price?: number | null
+          schedule_item_type?: Database["public"]["Enums"]["schedule_item_type"]
+          start_time?: string | null
         }
         Relationships: [
           {
-            foreignKeyName: "schedules_itinerary_id_fkey"
+            foreignKeyName: "public_schedule_items_itinerary_id_fkey"
             columns: ["itinerary_id"]
             isOneToOne: false
             referencedRelation: "itineraries"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "public_schedule_items_point_of_interest_id_fkey"
+            columns: ["point_of_interest_id"]
+            isOneToOne: false
+            referencedRelation: "point_of_interests"
             referencedColumns: ["id"]
           },
         ]
@@ -588,7 +595,6 @@ export type Database = {
       }
     }
     Enums: {
-      budget_type: "daily" | "fixed"
       itinerary_status:
         | "ai_pending"
         | "ai_failure"
@@ -597,13 +603,12 @@ export type Database = {
         | "canceled"
         | "in_progress"
         | "completed"
-      schedule_intensity: "relaxed" | "moderate" | "active"
+      media_type: "image" | "video"
       schedule_item_type:
         | "accommodation"
         | "transportation"
         | "meal"
         | "activity"
-      schedule_length: "quarter_day" | "half_day" | "full_day" | "whole_day"
     }
     CompositeTypes: {
       [_ in never]: never

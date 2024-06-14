@@ -44,7 +44,7 @@ Set up dev environment
 
 ### Generate Supabase Migrations
 
-1. `supabase db diff --use-migra -f <migration_file_name>`
+1. `supabase db diff -f <migration_file_name>`
 
 ### Generate Supabase Schemas
 
