@@ -43,7 +43,7 @@ export function generateItineraryWorker(supabaseClient: DottedSupabase) {
 
       // need start time, end time, and budget
       const data = await travelAgent.runTaskAsync(
-        `Generate a ${length_of_stay}-day itinerary to ${destination} where the start date is ${start_date} to end date is ${end_date}. Make use of the full time allowed. The itinerary MUST be ${length_of_stay} days long.
+        `Generate a ${length_of_stay}-day itinerary to ${destination} where the start date is ${start_date} to end date is ${end_date}. The itinerary MUST be ${length_of_stay} days long.
 
         My accommodations are arranged at ${accommodation}. The budget for the whole trip is $${budget} USD.
 
@@ -55,6 +55,8 @@ export function generateItineraryWorker(supabaseClient: DottedSupabase) {
         The description field should be at least 3 sentences long.
 
         A schedule_item type can ONLY be one of: meal or activity.
+        Each schedule item start and end time should be on the hour or half hour e.g 18:00, 12:30, 08:00.
+        The latitude and longitude WILL BE DIFFERENT so that there is about 15 - 60 minutes of driving.
 
         The schedule items should be in chronological order.
 
@@ -84,9 +86,6 @@ export function generateItineraryWorker(supabaseClient: DottedSupabase) {
                  .join(", ")}.`
              : ""
          }
-
-         Output format should ALWAYS be a JSON and the output should be structured like in the following JSON:
-         ${JSON.stringify(itineraryExample)}
         `
       );
 
@@ -171,6 +170,24 @@ export function generateItineraryWorker(supabaseClient: DottedSupabase) {
     if (pointOfInterest.error) {
       throw new Error(
         `Accommodation Point of Interest error: ${pointOfInterest.error}`
+      );
+    }
+
+    const accommodationScheduleItem = await supabaseClient
+      .from("schedule_items")
+      .insert({
+        duration: 0,
+        itinerary_id: data.itinerary.id,
+        point_of_interest_id: pointOfInterest.data.id,
+        schedule_item_type: "accommodation",
+        end_time: null,
+        start_time: null,
+        price: null,
+      });
+
+    if (accommodationScheduleItem.error) {
+      throw new Error(
+        `Accommodation Schedule Item Error: ${accommodationScheduleItem.error}`
       );
     }
 
@@ -325,32 +342,6 @@ export function generateItineraryWorker(supabaseClient: DottedSupabase) {
         // TODO: Find media pictures for schedule item
       }
     }
-
-    // Create routes between each point for each day with the start and end at the accommodation
-
-    console.log(scheduleItemsMap);
-
-    // const googleDirections = await Promise.allSettled(
-    //   points.map(([oPoint, dPoint]) =>
-    //     googleMapsClient.directions({
-    //       params: {
-    //         key: Bun.env.GOOGLE_MAPS_API_KEY,
-    //         origin: `${oPoint!.lat},${oPoint!.lon}`,
-    //         destination: dPoint
-    //           ? `${dPoint.lat},${dPoint.lon}`
-    //           : `${pointOfInterests[0].location?.lat},${pointOfInterests[0].location?.lon}`,
-    //       },
-    //     })
-    //   )
-    // ).then((res) =>
-    //   res.map((r) => (r.status === "fulfilled" ? r.value.data : null))
-    // );
-
-    // googleDirections.forEach((dir) => {
-    //   console.log(dir?.available_travel_modes);
-    //   console.log(dir?.routes.map((r) => r));
-    //   console.log(dir?.geocoded_waypoints.map((wy) => wy));
-    // });
 
     // update the itinerary status to draft mode
     await supabaseClient

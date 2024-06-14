@@ -19,7 +19,7 @@ export type Database = {
           location_id: number
           postal_code: string | null
           state: string | null
-          street1: string | null
+          street1: string
           street2: string | null
         }
         Insert: {
@@ -31,7 +31,7 @@ export type Database = {
           location_id: number
           postal_code?: string | null
           state?: string | null
-          street1?: string | null
+          street1: string
           street2?: string | null
         }
         Update: {
@@ -43,7 +43,7 @@ export type Database = {
           location_id?: number
           postal_code?: string | null
           state?: string | null
-          street1?: string | null
+          street1?: string
           street2?: string | null
         }
         Relationships: [
@@ -383,35 +383,35 @@ export type Database = {
         Row: {
           created_at: string
           duration: number
-          end_time: string
+          end_time: string | null
           id: number
           itinerary_id: number
           point_of_interest_id: number
           price: number | null
           schedule_item_type: Database["public"]["Enums"]["schedule_item_type"]
-          start_time: string
+          start_time: string | null
         }
         Insert: {
           created_at?: string
           duration: number
-          end_time: string
+          end_time?: string | null
           id?: number
           itinerary_id: number
           point_of_interest_id: number
           price?: number | null
           schedule_item_type: Database["public"]["Enums"]["schedule_item_type"]
-          start_time: string
+          start_time?: string | null
         }
         Update: {
           created_at?: string
           duration?: number
-          end_time?: string
+          end_time?: string | null
           id?: number
           itinerary_id?: number
           point_of_interest_id?: number
           price?: number | null
           schedule_item_type?: Database["public"]["Enums"]["schedule_item_type"]
-          start_time?: string
+          start_time?: string | null
         }
         Relationships: [
           {

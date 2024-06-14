@@ -44,6 +44,8 @@ export class AiAgent {
         toolConfig: toolsConfig,
         generationConfig: {
           temperature: 0.8,
+          topP: 0.5,
+          topK: 10,
         },
       },
       outputJson

@@ -11,9 +11,9 @@ import { waitListServices } from "./services/wait-list";
 // external services
 import { createRedisClient } from "@utils/create-redis-client";
 import { createSupabaseClient } from "@utils/create-supabase-client";
-import { createViatorClient } from "@utils/create-viator-client";
-import { createSQLiteClient } from "@utils/create-sqlite-client";
-import { createTripAdvisorClient } from "@utils/create-trip-advisor-client";
+// import { createSQLiteClient } from "@utils/create-sqlite-client";
+// import { createViatorClient } from "@utils/create-viator-client";
+// import { createTripAdvisorClient } from "@utils/create-trip-advisor-client";
 
 // supabase real-time subscriptions
 import { supabaseNewItinerarySubscription } from "@subscriptions/itineraries";
@@ -22,13 +22,13 @@ import type { GenerateItineraryJobData } from "./types/generate-itinerary-job-da
 
 export const redisClient = createRedisClient();
 export const supabaseClient = createSupabaseClient();
-export const viatorClient = createViatorClient({
-  apiKey: Bun.env.VIATOR_API_KEY,
-});
-export const dottedDb = createSQLiteClient();
-export const tripAdvisorClient = createTripAdvisorClient({
-  apiKey: Bun.env.TRIP_ADVISOR_CONTENT_API_KEY,
-});
+// export const viatorClient = createViatorClient({
+//   apiKey: Bun.env.VIATOR_API_KEY,
+// });
+// export const dottedDb = createSQLiteClient();
+// export const tripAdvisorClient = createTripAdvisorClient({
+//   apiKey: Bun.env.TRIP_ADVISOR_CONTENT_API_KEY,
+// });
 
 // create queues
 export const generateItineraryQueue = new Queue<GenerateItineraryJobData>(
