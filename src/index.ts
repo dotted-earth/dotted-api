@@ -16,7 +16,10 @@ import { createSupabaseClient } from "@utils/create-supabase-client";
 // import { createTripAdvisorClient } from "@utils/create-trip-advisor-client";
 
 // supabase real-time subscriptions
-import { supabaseNewItinerarySubscription } from "@subscriptions/itineraries";
+import {
+  supabaseNewItinerarySubscription,
+  supabaseRegenerateItinerarySubscription,
+} from "@subscriptions/itineraries";
 
 import type { GenerateItineraryJobData } from "./types/generate-itinerary-job-data";
 
@@ -58,6 +61,10 @@ const app = new Elysia()
   .listen(Bun.env.PORT, () => {
     // subscribe to supabase events after external services loaded and server has started
     supabaseNewItinerarySubscription(supabaseClient, generateItineraryQueue);
+    supabaseRegenerateItinerarySubscription(
+      supabaseClient,
+      generateItineraryQueue
+    );
   });
 
 logger.info(`app starting on ${app.server?.url}`);
