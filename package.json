@@ -33,5 +33,9 @@
     "supabase": "^1.169.6",
     "type-fest": "^4.14.0"
   },
-  "type": "module"
+  "type": "module",
+  "trustedDependencies": [
+    "@snaplet/seed",
+    "core-js"
+  ]
 }

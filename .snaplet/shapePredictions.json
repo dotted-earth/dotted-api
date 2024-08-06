@@ -85,60 +85,6 @@
   },
   {
     "schemaName": "public",
-    "tableName": "destinations",
-    "predictions": [
-      {
-        "input": "public destinations city",
-        "column": "city",
-        "shape": "CITY",
-        "confidence": 0.9979656934738159,
-        "context": "GENERAL",
-        "confidenceContext": 0
-      },
-      {
-        "input": "public destinations country",
-        "column": "country",
-        "shape": "COUNTRY",
-        "confidence": 0.9961445331573486,
-        "context": "GENERAL",
-        "confidenceContext": 0
-      },
-      {
-        "input": "public destinations currency",
-        "column": "currency",
-        "shape": "FINANCE_CURRENCY_NAME",
-        "confidence": 0.9682638645172119,
-        "context": "GENERAL",
-        "confidenceContext": 0
-      },
-      {
-        "input": "public destinations description",
-        "column": "description",
-        "shape": "COMMERCE_PRODUCT_DESCRIPTION",
-        "confidence": 0.7537017464637756,
-        "context": "GENERAL",
-        "confidenceContext": 0
-      },
-      {
-        "input": "public destinations language",
-        "column": "language",
-        "shape": "SYSTEM_FILE_NAME",
-        "confidence": 0.9533904790878296,
-        "context": "GENERAL",
-        "confidenceContext": 0
-      },
-      {
-        "input": "public destinations name",
-        "column": "name",
-        "shape": "AIRLINE_AIRPORT_NAME",
-        "confidence": 0.5115514993667603,
-        "context": "GENERAL",
-        "confidenceContext": 0
-      }
-    ]
-  },
-  {
-    "schemaName": "public",
     "tableName": "diets",
     "predictions": [
       {
@@ -222,6 +168,14 @@
     "tableName": "itineraries",
     "predictions": [
       {
+        "input": "public itineraries accommodation",
+        "column": "accommodation",
+        "shape": "SYSTEM_FILE_TYPE",
+        "confidence": 0.5592648983001709,
+        "context": "GENERAL",
+        "confidenceContext": 0
+      },
+      {
         "input": "public itineraries destination",
         "column": "destination",
         "shape": "STATUS",
@@ -240,6 +194,28 @@
         "column": "url",
         "shape": "IMAGE_URL",
         "confidence": 0.9267058372497559,
+        "context": "GENERAL",
+        "confidenceContext": 0
+      }
+    ]
+  },
+  {
+    "schemaName": "public",
+    "tableName": "point_of_interests",
+    "predictions": [
+      {
+        "input": "public point_of_interests description",
+        "column": "description",
+        "shape": "FINANCE_TRANSACTION_DESCRIPTION",
+        "confidence": 0.4771965742111206,
+        "context": "GENERAL",
+        "confidenceContext": 0
+      },
+      {
+        "input": "public point_of_interests name",
+        "column": "name",
+        "shape": "PERSON_FULL_NAME",
+        "confidence": 0.2674274742603302,
         "context": "GENERAL",
         "confidenceContext": 0
       }
@@ -292,50 +268,6 @@
         "column": "name",
         "shape": "COMPANY_NAME",
         "confidence": 0.5224767327308655,
-        "context": "GENERAL",
-        "confidenceContext": 0
-      }
-    ]
-  },
-  {
-    "schemaName": "public",
-    "tableName": "schedule_items",
-    "predictions": [
-      {
-        "input": "public schedule_items description",
-        "column": "description",
-        "shape": "COMMERCE_PRODUCT_DESCRIPTION",
-        "confidence": 0.7819201350212097,
-        "context": "GENERAL",
-        "confidenceContext": 0
-      },
-      {
-        "input": "public schedule_items name",
-        "column": "name",
-        "shape": "SYSTEM_CRON",
-        "confidence": 0.9708436131477356,
-        "context": "GENERAL",
-        "confidenceContext": 0
-      }
-    ]
-  },
-  {
-    "schemaName": "public",
-    "tableName": "schedules",
-    "predictions": [
-      {
-        "input": "public schedules description",
-        "column": "description",
-        "shape": "FINANCE_TRANSACTION_DESCRIPTION",
-        "confidence": 0.6335635185241699,
-        "context": "GENERAL",
-        "confidenceContext": 0
-      },
-      {
-        "input": "public schedules name",
-        "column": "name",
-        "shape": "COMPANY_NAME",
-        "confidence": 0.356598287820816,
         "context": "GENERAL",
         "confidenceContext": 0
       }

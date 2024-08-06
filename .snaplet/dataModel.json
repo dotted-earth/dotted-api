@@ -204,7 +204,7 @@
           "name": "state",
           "columnName": "state",
           "type": "text",
-          "isRequired": true,
+          "isRequired": false,
           "kind": "scalar",
           "isList": false,
           "isGenerated": false,
@@ -232,7 +232,7 @@
           "name": "postal_code",
           "columnName": "postal_code",
           "type": "text",
-          "isRequired": true,
+          "isRequired": false,
           "kind": "scalar",
           "isList": false,
           "isGenerated": false,
@@ -254,6 +254,52 @@
           "hasDefaultValue": false,
           "isId": false,
           "maxLength": null
+        },
+        {
+          "id": "public.addresses.location_id",
+          "name": "location_id",
+          "columnName": "location_id",
+          "type": "int8",
+          "isRequired": true,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false,
+          "isId": false,
+          "maxLength": null
+        },
+        {
+          "name": "locations",
+          "type": "locations",
+          "isRequired": true,
+          "kind": "object",
+          "relationName": "addressesTolocations",
+          "relationFromFields": [
+            "location_id"
+          ],
+          "relationToFields": [
+            "id"
+          ],
+          "isList": false,
+          "isId": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false
+        },
+        {
+          "name": "point_of_interests",
+          "type": "point_of_interests",
+          "isRequired": false,
+          "kind": "object",
+          "relationName": "point_of_interestsToaddresses",
+          "relationFromFields": [],
+          "relationToFields": [],
+          "isList": true,
+          "isId": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false
         }
       ],
       "uniqueConstraints": [
@@ -347,107 +393,6 @@
           "name": "audit_log_entries_pkey",
           "fields": [
             "id"
-          ],
-          "nullNotDistinct": false
-        }
-      ]
-    },
-    "broadcasts": {
-      "id": "realtime.broadcasts",
-      "schemaName": "realtime",
-      "tableName": "broadcasts",
-      "fields": [
-        {
-          "id": "realtime.broadcasts.id",
-          "name": "id",
-          "columnName": "id",
-          "type": "int8",
-          "isRequired": true,
-          "kind": "scalar",
-          "isList": false,
-          "isGenerated": false,
-          "sequence": {
-            "identifier": "\"realtime\".\"broadcasts_id_seq\"",
-            "increment": 1,
-            "start": 1
-          },
-          "hasDefaultValue": true,
-          "isId": true,
-          "maxLength": null
-        },
-        {
-          "id": "realtime.broadcasts.channel_id",
-          "name": "channel_id",
-          "columnName": "channel_id",
-          "type": "int8",
-          "isRequired": true,
-          "kind": "scalar",
-          "isList": false,
-          "isGenerated": false,
-          "sequence": false,
-          "hasDefaultValue": false,
-          "isId": false,
-          "maxLength": null
-        },
-        {
-          "id": "realtime.broadcasts.inserted_at",
-          "name": "inserted_at",
-          "columnName": "inserted_at",
-          "type": "timestamp",
-          "isRequired": true,
-          "kind": "scalar",
-          "isList": false,
-          "isGenerated": false,
-          "sequence": false,
-          "hasDefaultValue": false,
-          "isId": false,
-          "maxLength": null
-        },
-        {
-          "id": "realtime.broadcasts.updated_at",
-          "name": "updated_at",
-          "columnName": "updated_at",
-          "type": "timestamp",
-          "isRequired": true,
-          "kind": "scalar",
-          "isList": false,
-          "isGenerated": false,
-          "sequence": false,
-          "hasDefaultValue": false,
-          "isId": false,
-          "maxLength": null
-        },
-        {
-          "name": "channels",
-          "type": "channels",
-          "isRequired": true,
-          "kind": "object",
-          "relationName": "broadcastsTochannels",
-          "relationFromFields": [
-            "channel_id"
-          ],
-          "relationToFields": [
-            "id"
-          ],
-          "isList": false,
-          "isId": false,
-          "isGenerated": false,
-          "sequence": false,
-          "hasDefaultValue": false
-        }
-      ],
-      "uniqueConstraints": [
-        {
-          "name": "broadcasts_pkey",
-          "fields": [
-            "id"
-          ],
-          "nullNotDistinct": false
-        },
-        {
-          "name": "broadcasts_channel_id_index",
-          "fields": [
-            "channel_id"
           ],
           "nullNotDistinct": false
         }
@@ -658,193 +603,6 @@
         }
       ]
     },
-    "budget": {
-      "id": "public.budget",
-      "schemaName": "public",
-      "tableName": "budget",
-      "fields": [
-        {
-          "id": "public.budget.id",
-          "name": "id",
-          "columnName": "id",
-          "type": "int8",
-          "isRequired": true,
-          "kind": "scalar",
-          "isList": false,
-          "isGenerated": false,
-          "sequence": {
-            "identifier": "\"public\".\"budget_id_seq\"",
-            "increment": 1,
-            "start": 1
-          },
-          "hasDefaultValue": false,
-          "isId": true,
-          "maxLength": null
-        },
-        {
-          "id": "public.budget.created_at",
-          "name": "created_at",
-          "columnName": "created_at",
-          "type": "timestamptz",
-          "isRequired": true,
-          "kind": "scalar",
-          "isList": false,
-          "isGenerated": false,
-          "sequence": false,
-          "hasDefaultValue": true,
-          "isId": false,
-          "maxLength": null
-        },
-        {
-          "id": "public.budget.max",
-          "name": "max",
-          "columnName": "max",
-          "type": "int4",
-          "isRequired": true,
-          "kind": "scalar",
-          "isList": false,
-          "isGenerated": false,
-          "sequence": false,
-          "hasDefaultValue": false,
-          "isId": false,
-          "maxLength": null
-        },
-        {
-          "id": "public.budget.budget_type",
-          "name": "budget_type",
-          "columnName": "budget_type",
-          "type": "budget_type",
-          "isRequired": true,
-          "kind": "scalar",
-          "isList": false,
-          "isGenerated": false,
-          "sequence": false,
-          "hasDefaultValue": true,
-          "isId": false,
-          "maxLength": null
-        }
-      ],
-      "uniqueConstraints": [
-        {
-          "name": "budget_pkey",
-          "fields": [
-            "id"
-          ],
-          "nullNotDistinct": false
-        }
-      ]
-    },
-    "channels": {
-      "id": "realtime.channels",
-      "schemaName": "realtime",
-      "tableName": "channels",
-      "fields": [
-        {
-          "id": "realtime.channels.id",
-          "name": "id",
-          "columnName": "id",
-          "type": "int8",
-          "isRequired": true,
-          "kind": "scalar",
-          "isList": false,
-          "isGenerated": false,
-          "sequence": {
-            "identifier": "\"realtime\".\"channels_id_seq\"",
-            "increment": 1,
-            "start": 1
-          },
-          "hasDefaultValue": true,
-          "isId": true,
-          "maxLength": null
-        },
-        {
-          "id": "realtime.channels.name",
-          "name": "name",
-          "columnName": "name",
-          "type": "varchar",
-          "isRequired": true,
-          "kind": "scalar",
-          "isList": false,
-          "isGenerated": false,
-          "sequence": false,
-          "hasDefaultValue": false,
-          "isId": false,
-          "maxLength": 255
-        },
-        {
-          "id": "realtime.channels.inserted_at",
-          "name": "inserted_at",
-          "columnName": "inserted_at",
-          "type": "timestamp",
-          "isRequired": true,
-          "kind": "scalar",
-          "isList": false,
-          "isGenerated": false,
-          "sequence": false,
-          "hasDefaultValue": false,
-          "isId": false,
-          "maxLength": null
-        },
-        {
-          "id": "realtime.channels.updated_at",
-          "name": "updated_at",
-          "columnName": "updated_at",
-          "type": "timestamp",
-          "isRequired": true,
-          "kind": "scalar",
-          "isList": false,
-          "isGenerated": false,
-          "sequence": false,
-          "hasDefaultValue": false,
-          "isId": false,
-          "maxLength": null
-        },
-        {
-          "name": "broadcasts",
-          "type": "broadcasts",
-          "isRequired": false,
-          "kind": "object",
-          "relationName": "broadcastsTochannels",
-          "relationFromFields": [],
-          "relationToFields": [],
-          "isList": true,
-          "isId": false,
-          "isGenerated": false,
-          "sequence": false,
-          "hasDefaultValue": false
-        },
-        {
-          "name": "presences",
-          "type": "presences",
-          "isRequired": false,
-          "kind": "object",
-          "relationName": "presencesTochannels",
-          "relationFromFields": [],
-          "relationToFields": [],
-          "isList": true,
-          "isId": false,
-          "isGenerated": false,
-          "sequence": false,
-          "hasDefaultValue": false
-        }
-      ],
-      "uniqueConstraints": [
-        {
-          "name": "channels_pkey",
-          "fields": [
-            "id"
-          ],
-          "nullNotDistinct": false
-        },
-        {
-          "name": "channels_name_index",
-          "fields": [
-            "name"
-          ],
-          "nullNotDistinct": false
-        }
-      ]
-    },
     "cuisines": {
       "id": "public.cuisines",
       "schemaName": "public",
@@ -935,166 +693,6 @@
         },
         {
           "name": "cuisines_pkey",
-          "fields": [
-            "id"
-          ],
-          "nullNotDistinct": false
-        }
-      ]
-    },
-    "destinations": {
-      "id": "public.destinations",
-      "schemaName": "public",
-      "tableName": "destinations",
-      "fields": [
-        {
-          "id": "public.destinations.id",
-          "name": "id",
-          "columnName": "id",
-          "type": "int8",
-          "isRequired": true,
-          "kind": "scalar",
-          "isList": false,
-          "isGenerated": false,
-          "sequence": {
-            "identifier": "\"public\".\"destinations_id_seq\"",
-            "increment": 1,
-            "start": 1
-          },
-          "hasDefaultValue": false,
-          "isId": true,
-          "maxLength": null
-        },
-        {
-          "id": "public.destinations.created_at",
-          "name": "created_at",
-          "columnName": "created_at",
-          "type": "timestamptz",
-          "isRequired": true,
-          "kind": "scalar",
-          "isList": false,
-          "isGenerated": false,
-          "sequence": false,
-          "hasDefaultValue": true,
-          "isId": false,
-          "maxLength": null
-        },
-        {
-          "id": "public.destinations.name",
-          "name": "name",
-          "columnName": "name",
-          "type": "varchar",
-          "isRequired": true,
-          "kind": "scalar",
-          "isList": false,
-          "isGenerated": false,
-          "sequence": false,
-          "hasDefaultValue": false,
-          "isId": false,
-          "maxLength": null
-        },
-        {
-          "id": "public.destinations.description",
-          "name": "description",
-          "columnName": "description",
-          "type": "varchar",
-          "isRequired": true,
-          "kind": "scalar",
-          "isList": false,
-          "isGenerated": false,
-          "sequence": false,
-          "hasDefaultValue": false,
-          "isId": false,
-          "maxLength": null
-        },
-        {
-          "id": "public.destinations.city",
-          "name": "city",
-          "columnName": "city",
-          "type": "varchar",
-          "isRequired": true,
-          "kind": "scalar",
-          "isList": false,
-          "isGenerated": false,
-          "sequence": false,
-          "hasDefaultValue": false,
-          "isId": false,
-          "maxLength": null
-        },
-        {
-          "id": "public.destinations.country",
-          "name": "country",
-          "columnName": "country",
-          "type": "varchar",
-          "isRequired": true,
-          "kind": "scalar",
-          "isList": false,
-          "isGenerated": false,
-          "sequence": false,
-          "hasDefaultValue": false,
-          "isId": false,
-          "maxLength": null
-        },
-        {
-          "id": "public.destinations.lat",
-          "name": "lat",
-          "columnName": "lat",
-          "type": "float4",
-          "isRequired": true,
-          "kind": "scalar",
-          "isList": false,
-          "isGenerated": false,
-          "sequence": false,
-          "hasDefaultValue": false,
-          "isId": false,
-          "maxLength": null
-        },
-        {
-          "id": "public.destinations.lon",
-          "name": "lon",
-          "columnName": "lon",
-          "type": "float4",
-          "isRequired": true,
-          "kind": "scalar",
-          "isList": false,
-          "isGenerated": false,
-          "sequence": false,
-          "hasDefaultValue": false,
-          "isId": false,
-          "maxLength": null
-        },
-        {
-          "id": "public.destinations.currency",
-          "name": "currency",
-          "columnName": "currency",
-          "type": "text",
-          "isRequired": true,
-          "kind": "scalar",
-          "isList": false,
-          "isGenerated": false,
-          "sequence": false,
-          "hasDefaultValue": false,
-          "isId": false,
-          "maxLength": null
-        },
-        {
-          "id": "public.destinations.language",
-          "name": "language",
-          "columnName": "language",
-          "type": "varchar",
-          "isRequired": true,
-          "kind": "scalar",
-          "isList": false,
-          "isGenerated": false,
-          "sequence": false,
-          "hasDefaultValue": false,
-          "isId": false,
-          "maxLength": null
-        }
-      ],
-      "uniqueConstraints": [
-        {
-          "name": "destinations_pkey",
           "fields": [
             "id"
           ],
@@ -1277,6 +875,125 @@
           "name": "email_sign_ups_pkey",
           "fields": [
             "id"
+          ],
+          "nullNotDistinct": false
+        }
+      ]
+    },
+    "extensions": {
+      "id": "_realtime.extensions",
+      "schemaName": "_realtime",
+      "tableName": "extensions",
+      "fields": [
+        {
+          "id": "_realtime.extensions.id",
+          "name": "id",
+          "columnName": "id",
+          "type": "uuid",
+          "isRequired": true,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false,
+          "isId": true,
+          "maxLength": null
+        },
+        {
+          "id": "_realtime.extensions.type",
+          "name": "type",
+          "columnName": "type",
+          "type": "text",
+          "isRequired": false,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false,
+          "isId": false,
+          "maxLength": null
+        },
+        {
+          "id": "_realtime.extensions.settings",
+          "name": "settings",
+          "columnName": "settings",
+          "type": "jsonb",
+          "isRequired": false,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false,
+          "isId": false,
+          "maxLength": null
+        },
+        {
+          "id": "_realtime.extensions.tenant_external_id",
+          "name": "tenant_external_id",
+          "columnName": "tenant_external_id",
+          "type": "text",
+          "isRequired": false,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false,
+          "isId": false,
+          "maxLength": null
+        },
+        {
+          "id": "_realtime.extensions.inserted_at",
+          "name": "inserted_at",
+          "columnName": "inserted_at",
+          "type": "timestamp",
+          "isRequired": true,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false,
+          "isId": false,
+          "maxLength": null
+        },
+        {
+          "id": "_realtime.extensions.updated_at",
+          "name": "updated_at",
+          "columnName": "updated_at",
+          "type": "timestamp",
+          "isRequired": true,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false,
+          "isId": false,
+          "maxLength": null
+        },
+        {
+          "name": "tenants",
+          "type": "tenants",
+          "isRequired": false,
+          "kind": "object",
+          "relationName": "extensionsTotenants",
+          "relationFromFields": [
+            "tenant_external_id"
+          ],
+          "relationToFields": [
+            "external_id"
+          ],
+          "isList": false,
+          "isId": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false
+        }
+      ],
+      "uniqueConstraints": [
+        {
+          "name": "extensions_tenant_external_id_type_index",
+          "fields": [
+            "tenant_external_id",
+            "type"
           ],
           "nullNotDistinct": false
         }
@@ -2058,7 +1775,7 @@
           "id": "public.itineraries.start_date",
           "name": "start_date",
           "columnName": "start_date",
-          "type": "date",
+          "type": "timestamp",
           "isRequired": true,
           "kind": "scalar",
           "isList": false,
@@ -2086,7 +1803,7 @@
           "id": "public.itineraries.end_date",
           "name": "end_date",
           "columnName": "end_date",
-          "type": "date",
+          "type": "timestamp",
           "isRequired": true,
           "kind": "scalar",
           "isList": false,
@@ -2100,7 +1817,7 @@
           "id": "public.itineraries.destination",
           "name": "destination",
           "columnName": "destination",
-          "type": "varchar",
+          "type": "text",
           "isRequired": true,
           "kind": "scalar",
           "isList": false,
@@ -2114,7 +1831,7 @@
           "id": "public.itineraries.budget",
           "name": "budget",
           "columnName": "budget",
-          "type": "int8",
+          "type": "numeric",
           "isRequired": false,
           "kind": "scalar",
           "isList": false,
@@ -2167,6 +1884,20 @@
           "maxLength": null
         },
         {
+          "id": "public.itineraries.accommodation",
+          "name": "accommodation",
+          "columnName": "accommodation",
+          "type": "text",
+          "isRequired": true,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false,
+          "isId": false,
+          "maxLength": null
+        },
+        {
           "name": "media",
           "type": "media",
           "isRequired": false,
@@ -2203,11 +1934,11 @@
           "hasDefaultValue": false
         },
         {
-          "name": "schedules",
-          "type": "schedules",
+          "name": "schedule_items",
+          "type": "schedule_items",
           "isRequired": false,
           "kind": "object",
-          "relationName": "schedulesToitineraries",
+          "relationName": "schedule_itemsToitineraries",
           "relationFromFields": [],
           "relationToFields": [],
           "isList": true,
@@ -2505,6 +2236,124 @@
         }
       ]
     },
+    "locations": {
+      "id": "public.locations",
+      "schemaName": "public",
+      "tableName": "locations",
+      "fields": [
+        {
+          "id": "public.locations.id",
+          "name": "id",
+          "columnName": "id",
+          "type": "int8",
+          "isRequired": true,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": {
+            "identifier": "\"public\".\"locations_id_seq\"",
+            "increment": 1,
+            "start": 1
+          },
+          "hasDefaultValue": false,
+          "isId": true,
+          "maxLength": null
+        },
+        {
+          "id": "public.locations.created_at",
+          "name": "created_at",
+          "columnName": "created_at",
+          "type": "timestamptz",
+          "isRequired": true,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": true,
+          "isId": false,
+          "maxLength": null
+        },
+        {
+          "id": "public.locations.lat",
+          "name": "lat",
+          "columnName": "lat",
+          "type": "numeric",
+          "isRequired": true,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false,
+          "isId": false,
+          "maxLength": null
+        },
+        {
+          "id": "public.locations.lon",
+          "name": "lon",
+          "columnName": "lon",
+          "type": "numeric",
+          "isRequired": true,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false,
+          "isId": false,
+          "maxLength": null
+        },
+        {
+          "id": "public.locations.parent_id",
+          "name": "parent_id",
+          "columnName": "parent_id",
+          "type": "int8",
+          "isRequired": false,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false,
+          "isId": false,
+          "maxLength": null
+        },
+        {
+          "name": "addresses",
+          "type": "addresses",
+          "isRequired": false,
+          "kind": "object",
+          "relationName": "addressesTolocations",
+          "relationFromFields": [],
+          "relationToFields": [],
+          "isList": true,
+          "isId": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false
+        },
+        {
+          "name": "point_of_interests",
+          "type": "point_of_interests",
+          "isRequired": false,
+          "kind": "object",
+          "relationName": "point_of_interestsTolocations",
+          "relationFromFields": [],
+          "relationToFields": [],
+          "isList": true,
+          "isId": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false
+        }
+      ],
+      "uniqueConstraints": [
+        {
+          "name": "locations_pkey",
+          "fields": [
+            "id"
+          ],
+          "nullNotDistinct": false
+        }
+      ]
+    },
     "media": {
       "id": "public.media",
       "schemaName": "public",
@@ -2546,7 +2395,21 @@
           "id": "public.media.url",
           "name": "url",
           "columnName": "url",
-          "type": "varchar",
+          "type": "text",
+          "isRequired": true,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false,
+          "isId": false,
+          "maxLength": null
+        },
+        {
+          "id": "public.media.media_type",
+          "name": "media_type",
+          "columnName": "media_type",
+          "type": "media_type",
           "isRequired": true,
           "kind": "scalar",
           "isList": false,
@@ -2569,11 +2432,122 @@
           "isGenerated": false,
           "sequence": false,
           "hasDefaultValue": false
+        },
+        {
+          "name": "point_of_interests_media",
+          "type": "point_of_interests_media",
+          "isRequired": false,
+          "kind": "object",
+          "relationName": "point_of_interests_mediaTomedia",
+          "relationFromFields": [],
+          "relationToFields": [],
+          "isList": true,
+          "isId": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false
         }
       ],
       "uniqueConstraints": [
         {
           "name": "media_pkey",
+          "fields": [
+            "id"
+          ],
+          "nullNotDistinct": false
+        },
+        {
+          "name": "media_url_key",
+          "fields": [
+            "url"
+          ],
+          "nullNotDistinct": false
+        }
+      ]
+    },
+    "messages": {
+      "id": "realtime.messages",
+      "schemaName": "realtime",
+      "tableName": "messages",
+      "fields": [
+        {
+          "id": "realtime.messages.id",
+          "name": "id",
+          "columnName": "id",
+          "type": "int8",
+          "isRequired": true,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": {
+            "identifier": "\"realtime\".\"messages_id_seq\"",
+            "increment": 1,
+            "start": 1
+          },
+          "hasDefaultValue": true,
+          "isId": true,
+          "maxLength": null
+        },
+        {
+          "id": "realtime.messages.topic",
+          "name": "topic",
+          "columnName": "topic",
+          "type": "text",
+          "isRequired": true,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false,
+          "isId": false,
+          "maxLength": null
+        },
+        {
+          "id": "realtime.messages.extension",
+          "name": "extension",
+          "columnName": "extension",
+          "type": "text",
+          "isRequired": true,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false,
+          "isId": false,
+          "maxLength": null
+        },
+        {
+          "id": "realtime.messages.inserted_at",
+          "name": "inserted_at",
+          "columnName": "inserted_at",
+          "type": "timestamp",
+          "isRequired": true,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false,
+          "isId": false,
+          "maxLength": null
+        },
+        {
+          "id": "realtime.messages.updated_at",
+          "name": "updated_at",
+          "columnName": "updated_at",
+          "type": "timestamp",
+          "isRequired": true,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false,
+          "isId": false,
+          "maxLength": null
+        }
+      ],
+      "uniqueConstraints": [
+        {
+          "name": "messages_pkey",
           "fields": [
             "id"
           ],
@@ -3424,13 +3398,13 @@
         }
       ]
     },
-    "presences": {
-      "id": "realtime.presences",
-      "schemaName": "realtime",
-      "tableName": "presences",
+    "point_of_interests": {
+      "id": "public.point_of_interests",
+      "schemaName": "public",
+      "tableName": "point_of_interests",
       "fields": [
         {
-          "id": "realtime.presences.id",
+          "id": "public.point_of_interests.id",
           "name": "id",
           "columnName": "id",
           "type": "int8",
@@ -3439,18 +3413,60 @@
           "isList": false,
           "isGenerated": false,
           "sequence": {
-            "identifier": "\"realtime\".\"presences_id_seq\"",
+            "identifier": "\"public\".\"point_of_interests_id_seq\"",
             "increment": 1,
             "start": 1
           },
-          "hasDefaultValue": true,
+          "hasDefaultValue": false,
           "isId": true,
           "maxLength": null
         },
         {
-          "id": "realtime.presences.channel_id",
-          "name": "channel_id",
-          "columnName": "channel_id",
+          "id": "public.point_of_interests.created_at",
+          "name": "created_at",
+          "columnName": "created_at",
+          "type": "timestamptz",
+          "isRequired": true,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": true,
+          "isId": false,
+          "maxLength": null
+        },
+        {
+          "id": "public.point_of_interests.name",
+          "name": "name",
+          "columnName": "name",
+          "type": "text",
+          "isRequired": true,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false,
+          "isId": false,
+          "maxLength": null
+        },
+        {
+          "id": "public.point_of_interests.description",
+          "name": "description",
+          "columnName": "description",
+          "type": "text",
+          "isRequired": true,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false,
+          "isId": false,
+          "maxLength": null
+        },
+        {
+          "id": "public.point_of_interests.location_id",
+          "name": "location_id",
+          "columnName": "location_id",
           "type": "int8",
           "isRequired": true,
           "kind": "scalar",
@@ -3462,10 +3478,10 @@
           "maxLength": null
         },
         {
-          "id": "realtime.presences.inserted_at",
-          "name": "inserted_at",
-          "columnName": "inserted_at",
-          "type": "timestamp",
+          "id": "public.point_of_interests.address_id",
+          "name": "address_id",
+          "columnName": "address_id",
+          "type": "int8",
           "isRequired": true,
           "kind": "scalar",
           "isList": false,
@@ -3476,27 +3492,171 @@
           "maxLength": null
         },
         {
-          "id": "realtime.presences.updated_at",
-          "name": "updated_at",
-          "columnName": "updated_at",
-          "type": "timestamp",
-          "isRequired": true,
-          "kind": "scalar",
-          "isList": false,
-          "isGenerated": false,
-          "sequence": false,
-          "hasDefaultValue": false,
-          "isId": false,
-          "maxLength": null
-        },
-        {
-          "name": "channels",
-          "type": "channels",
+          "name": "addresses",
+          "type": "addresses",
           "isRequired": true,
           "kind": "object",
-          "relationName": "presencesTochannels",
+          "relationName": "point_of_interestsToaddresses",
           "relationFromFields": [
-            "channel_id"
+            "address_id"
+          ],
+          "relationToFields": [
+            "id"
+          ],
+          "isList": false,
+          "isId": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false
+        },
+        {
+          "name": "locations",
+          "type": "locations",
+          "isRequired": true,
+          "kind": "object",
+          "relationName": "point_of_interestsTolocations",
+          "relationFromFields": [
+            "location_id"
+          ],
+          "relationToFields": [
+            "id"
+          ],
+          "isList": false,
+          "isId": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false
+        },
+        {
+          "name": "point_of_interests_media",
+          "type": "point_of_interests_media",
+          "isRequired": false,
+          "kind": "object",
+          "relationName": "point_of_interests_mediaTopoint_of_interests",
+          "relationFromFields": [],
+          "relationToFields": [],
+          "isList": true,
+          "isId": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false
+        },
+        {
+          "name": "schedule_items",
+          "type": "schedule_items",
+          "isRequired": false,
+          "kind": "object",
+          "relationName": "schedule_itemsTopoint_of_interests",
+          "relationFromFields": [],
+          "relationToFields": [],
+          "isList": true,
+          "isId": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false
+        }
+      ],
+      "uniqueConstraints": [
+        {
+          "name": "point_of_interests_pkey",
+          "fields": [
+            "id"
+          ],
+          "nullNotDistinct": false
+        }
+      ]
+    },
+    "point_of_interests_media": {
+      "id": "public.point_of_interests_media",
+      "schemaName": "public",
+      "tableName": "point_of_interests_media",
+      "fields": [
+        {
+          "id": "public.point_of_interests_media.id",
+          "name": "id",
+          "columnName": "id",
+          "type": "int8",
+          "isRequired": true,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": {
+            "identifier": "\"public\".\"point_of_interests_media_id_seq\"",
+            "increment": 1,
+            "start": 1
+          },
+          "hasDefaultValue": false,
+          "isId": true,
+          "maxLength": null
+        },
+        {
+          "id": "public.point_of_interests_media.created_at",
+          "name": "created_at",
+          "columnName": "created_at",
+          "type": "timestamptz",
+          "isRequired": true,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": true,
+          "isId": false,
+          "maxLength": null
+        },
+        {
+          "id": "public.point_of_interests_media.point_of_interest_id",
+          "name": "point_of_interest_id",
+          "columnName": "point_of_interest_id",
+          "type": "int8",
+          "isRequired": true,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false,
+          "isId": false,
+          "maxLength": null
+        },
+        {
+          "id": "public.point_of_interests_media.media_id",
+          "name": "media_id",
+          "columnName": "media_id",
+          "type": "int8",
+          "isRequired": true,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false,
+          "isId": false,
+          "maxLength": null
+        },
+        {
+          "name": "media",
+          "type": "media",
+          "isRequired": true,
+          "kind": "object",
+          "relationName": "point_of_interests_mediaTomedia",
+          "relationFromFields": [
+            "media_id"
+          ],
+          "relationToFields": [
+            "id"
+          ],
+          "isList": false,
+          "isId": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false
+        },
+        {
+          "name": "point_of_interests",
+          "type": "point_of_interests",
+          "isRequired": true,
+          "kind": "object",
+          "relationName": "point_of_interests_mediaTopoint_of_interests",
+          "relationFromFields": [
+            "point_of_interest_id"
           ],
           "relationToFields": [
             "id"
@@ -3510,16 +3670,17 @@
       ],
       "uniqueConstraints": [
         {
-          "name": "presences_pkey",
+          "name": "poi_media",
           "fields": [
-            "id"
+            "media_id",
+            "point_of_interest_id"
           ],
           "nullNotDistinct": false
         },
         {
-          "name": "presences_channel_id_index",
+          "name": "schedule_item_media_pkey",
           "fields": [
-            "channel_id"
+            "id"
           ],
           "nullNotDistinct": false
         }
@@ -4723,20 +4884,6 @@
           "maxLength": null
         },
         {
-          "id": "public.schedule_items.schedule_id",
-          "name": "schedule_id",
-          "columnName": "schedule_id",
-          "type": "int8",
-          "isRequired": true,
-          "kind": "scalar",
-          "isList": false,
-          "isGenerated": false,
-          "sequence": false,
-          "hasDefaultValue": false,
-          "isId": false,
-          "maxLength": null
-        },
-        {
           "id": "public.schedule_items.schedule_item_type",
           "name": "schedule_item_type",
           "columnName": "schedule_item_type",
@@ -4751,39 +4898,11 @@
           "maxLength": null
         },
         {
-          "id": "public.schedule_items.name",
-          "name": "name",
-          "columnName": "name",
-          "type": "varchar",
-          "isRequired": true,
-          "kind": "scalar",
-          "isList": false,
-          "isGenerated": false,
-          "sequence": false,
-          "hasDefaultValue": false,
-          "isId": false,
-          "maxLength": null
-        },
-        {
-          "id": "public.schedule_items.description",
-          "name": "description",
-          "columnName": "description",
-          "type": "varchar",
-          "isRequired": true,
-          "kind": "scalar",
-          "isList": false,
-          "isGenerated": false,
-          "sequence": false,
-          "hasDefaultValue": false,
-          "isId": false,
-          "maxLength": null
-        },
-        {
           "id": "public.schedule_items.start_time",
           "name": "start_time",
           "columnName": "start_time",
-          "type": "timestamptz",
-          "isRequired": true,
+          "type": "timestamp",
+          "isRequired": false,
           "kind": "scalar",
           "isList": false,
           "isGenerated": false,
@@ -4796,8 +4915,8 @@
           "id": "public.schedule_items.end_time",
           "name": "end_time",
           "columnName": "end_time",
-          "type": "timestamptz",
-          "isRequired": true,
+          "type": "timestamp",
+          "isRequired": false,
           "kind": "scalar",
           "isList": false,
           "isGenerated": false,
@@ -4835,13 +4954,59 @@
           "maxLength": null
         },
         {
-          "name": "schedules",
-          "type": "schedules",
+          "id": "public.schedule_items.itinerary_id",
+          "name": "itinerary_id",
+          "columnName": "itinerary_id",
+          "type": "int8",
+          "isRequired": true,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false,
+          "isId": false,
+          "maxLength": null
+        },
+        {
+          "id": "public.schedule_items.point_of_interest_id",
+          "name": "point_of_interest_id",
+          "columnName": "point_of_interest_id",
+          "type": "int8",
+          "isRequired": true,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false,
+          "isId": false,
+          "maxLength": null
+        },
+        {
+          "name": "itineraries",
+          "type": "itineraries",
           "isRequired": true,
           "kind": "object",
-          "relationName": "schedule_itemsToschedules",
+          "relationName": "schedule_itemsToitineraries",
           "relationFromFields": [
-            "schedule_id"
+            "itinerary_id"
+          ],
+          "relationToFields": [
+            "id"
+          ],
+          "isList": false,
+          "isId": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false
+        },
+        {
+          "name": "point_of_interests",
+          "type": "point_of_interests",
+          "isRequired": true,
+          "kind": "object",
+          "relationName": "schedule_itemsTopoint_of_interests",
+          "relationFromFields": [
+            "point_of_interest_id"
           ],
           "relationToFields": [
             "id"
@@ -4863,76 +5028,30 @@
         }
       ]
     },
-    "schedules": {
-      "id": "public.schedules",
-      "schemaName": "public",
-      "tableName": "schedules",
+    "_realtime_schema_migrations": {
+      "id": "_realtime.schema_migrations",
+      "schemaName": "_realtime",
+      "tableName": "schema_migrations",
       "fields": [
         {
-          "id": "public.schedules.id",
-          "name": "id",
-          "columnName": "id",
+          "id": "_realtime.schema_migrations.version",
+          "name": "version",
+          "columnName": "version",
           "type": "int8",
           "isRequired": true,
           "kind": "scalar",
           "isList": false,
           "isGenerated": false,
-          "sequence": {
-            "identifier": "\"public\".\"schedules_id_seq\"",
-            "increment": 1,
-            "start": 1
-          },
+          "sequence": false,
           "hasDefaultValue": false,
           "isId": true,
           "maxLength": null
         },
         {
-          "id": "public.schedules.created_at",
-          "name": "created_at",
-          "columnName": "created_at",
-          "type": "timestamptz",
-          "isRequired": true,
-          "kind": "scalar",
-          "isList": false,
-          "isGenerated": false,
-          "sequence": false,
-          "hasDefaultValue": true,
-          "isId": false,
-          "maxLength": null
-        },
-        {
-          "id": "public.schedules.itinerary_id",
-          "name": "itinerary_id",
-          "columnName": "itinerary_id",
-          "type": "int8",
-          "isRequired": true,
-          "kind": "scalar",
-          "isList": false,
-          "isGenerated": false,
-          "sequence": false,
-          "hasDefaultValue": false,
-          "isId": false,
-          "maxLength": null
-        },
-        {
-          "id": "public.schedules.name",
-          "name": "name",
-          "columnName": "name",
-          "type": "varchar",
-          "isRequired": true,
-          "kind": "scalar",
-          "isList": false,
-          "isGenerated": false,
-          "sequence": false,
-          "hasDefaultValue": false,
-          "isId": false,
-          "maxLength": null
-        },
-        {
-          "id": "public.schedules.description",
-          "name": "description",
-          "columnName": "description",
-          "type": "varchar",
+          "id": "_realtime.schema_migrations.inserted_at",
+          "name": "inserted_at",
+          "columnName": "inserted_at",
+          "type": "timestamp",
           "isRequired": false,
           "kind": "scalar",
           "isList": false,
@@ -4941,119 +5060,9 @@
           "hasDefaultValue": false,
           "isId": false,
           "maxLength": null
-        },
-        {
-          "id": "public.schedules.schedule_intensity",
-          "name": "schedule_intensity",
-          "columnName": "schedule_intensity",
-          "type": "schedule_intensity",
-          "isRequired": true,
-          "kind": "scalar",
-          "isList": false,
-          "isGenerated": false,
-          "sequence": false,
-          "hasDefaultValue": false,
-          "isId": false,
-          "maxLength": null
-        },
-        {
-          "id": "public.schedules.schedule_length",
-          "name": "schedule_length",
-          "columnName": "schedule_length",
-          "type": "schedule_length",
-          "isRequired": true,
-          "kind": "scalar",
-          "isList": false,
-          "isGenerated": false,
-          "sequence": false,
-          "hasDefaultValue": false,
-          "isId": false,
-          "maxLength": null
-        },
-        {
-          "id": "public.schedules.start_date",
-          "name": "start_date",
-          "columnName": "start_date",
-          "type": "timestamptz",
-          "isRequired": true,
-          "kind": "scalar",
-          "isList": false,
-          "isGenerated": false,
-          "sequence": false,
-          "hasDefaultValue": false,
-          "isId": false,
-          "maxLength": null
-        },
-        {
-          "id": "public.schedules.end_date",
-          "name": "end_date",
-          "columnName": "end_date",
-          "type": "timestamptz",
-          "isRequired": true,
-          "kind": "scalar",
-          "isList": false,
-          "isGenerated": false,
-          "sequence": false,
-          "hasDefaultValue": false,
-          "isId": false,
-          "maxLength": null
-        },
-        {
-          "id": "public.schedules.duration",
-          "name": "duration",
-          "columnName": "duration",
-          "type": "float4",
-          "isRequired": true,
-          "kind": "scalar",
-          "isList": false,
-          "isGenerated": false,
-          "sequence": false,
-          "hasDefaultValue": false,
-          "isId": false,
-          "maxLength": null
-        },
-        {
-          "name": "itineraries",
-          "type": "itineraries",
-          "isRequired": true,
-          "kind": "object",
-          "relationName": "schedulesToitineraries",
-          "relationFromFields": [
-            "itinerary_id"
-          ],
-          "relationToFields": [
-            "id"
-          ],
-          "isList": false,
-          "isId": false,
-          "isGenerated": false,
-          "sequence": false,
-          "hasDefaultValue": false
-        },
-        {
-          "name": "schedule_items",
-          "type": "schedule_items",
-          "isRequired": false,
-          "kind": "object",
-          "relationName": "schedule_itemsToschedules",
-          "relationFromFields": [],
-          "relationToFields": [],
-          "isList": true,
-          "isId": false,
-          "isGenerated": false,
-          "sequence": false,
-          "hasDefaultValue": false
         }
       ],
-      "uniqueConstraints": [
-        {
-          "name": "schedules_pkey",
-          "fields": [
-            "id"
-          ],
-          "nullNotDistinct": false
-        }
-      ]
+      "uniqueConstraints": []
     },
     "auth_schema_migrations": {
       "id": "auth.schema_migrations",
@@ -5874,6 +5883,232 @@
             "entity",
             "filters",
             "subscription_id"
+          ],
+          "nullNotDistinct": false
+        }
+      ]
+    },
+    "tenants": {
+      "id": "_realtime.tenants",
+      "schemaName": "_realtime",
+      "tableName": "tenants",
+      "fields": [
+        {
+          "id": "_realtime.tenants.id",
+          "name": "id",
+          "columnName": "id",
+          "type": "uuid",
+          "isRequired": true,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false,
+          "isId": true,
+          "maxLength": null
+        },
+        {
+          "id": "_realtime.tenants.name",
+          "name": "name",
+          "columnName": "name",
+          "type": "text",
+          "isRequired": false,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false,
+          "isId": false,
+          "maxLength": null
+        },
+        {
+          "id": "_realtime.tenants.external_id",
+          "name": "external_id",
+          "columnName": "external_id",
+          "type": "text",
+          "isRequired": false,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false,
+          "isId": false,
+          "maxLength": null
+        },
+        {
+          "id": "_realtime.tenants.jwt_secret",
+          "name": "jwt_secret",
+          "columnName": "jwt_secret",
+          "type": "text",
+          "isRequired": false,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false,
+          "isId": false,
+          "maxLength": null
+        },
+        {
+          "id": "_realtime.tenants.max_concurrent_users",
+          "name": "max_concurrent_users",
+          "columnName": "max_concurrent_users",
+          "type": "int4",
+          "isRequired": true,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": true,
+          "isId": false,
+          "maxLength": null
+        },
+        {
+          "id": "_realtime.tenants.inserted_at",
+          "name": "inserted_at",
+          "columnName": "inserted_at",
+          "type": "timestamp",
+          "isRequired": true,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false,
+          "isId": false,
+          "maxLength": null
+        },
+        {
+          "id": "_realtime.tenants.updated_at",
+          "name": "updated_at",
+          "columnName": "updated_at",
+          "type": "timestamp",
+          "isRequired": true,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false,
+          "isId": false,
+          "maxLength": null
+        },
+        {
+          "id": "_realtime.tenants.max_events_per_second",
+          "name": "max_events_per_second",
+          "columnName": "max_events_per_second",
+          "type": "int4",
+          "isRequired": true,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": true,
+          "isId": false,
+          "maxLength": null
+        },
+        {
+          "id": "_realtime.tenants.postgres_cdc_default",
+          "name": "postgres_cdc_default",
+          "columnName": "postgres_cdc_default",
+          "type": "text",
+          "isRequired": false,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": true,
+          "isId": false,
+          "maxLength": null
+        },
+        {
+          "id": "_realtime.tenants.max_bytes_per_second",
+          "name": "max_bytes_per_second",
+          "columnName": "max_bytes_per_second",
+          "type": "int4",
+          "isRequired": true,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": true,
+          "isId": false,
+          "maxLength": null
+        },
+        {
+          "id": "_realtime.tenants.max_channels_per_client",
+          "name": "max_channels_per_client",
+          "columnName": "max_channels_per_client",
+          "type": "int4",
+          "isRequired": true,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": true,
+          "isId": false,
+          "maxLength": null
+        },
+        {
+          "id": "_realtime.tenants.max_joins_per_second",
+          "name": "max_joins_per_second",
+          "columnName": "max_joins_per_second",
+          "type": "int4",
+          "isRequired": true,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": true,
+          "isId": false,
+          "maxLength": null
+        },
+        {
+          "id": "_realtime.tenants.suspend",
+          "name": "suspend",
+          "columnName": "suspend",
+          "type": "bool",
+          "isRequired": false,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": true,
+          "isId": false,
+          "maxLength": null
+        },
+        {
+          "id": "_realtime.tenants.jwt_jwks",
+          "name": "jwt_jwks",
+          "columnName": "jwt_jwks",
+          "type": "jsonb",
+          "isRequired": false,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false,
+          "isId": false,
+          "maxLength": null
+        },
+        {
+          "name": "extensions",
+          "type": "extensions",
+          "isRequired": false,
+          "kind": "object",
+          "relationName": "extensionsTotenants",
+          "relationFromFields": [],
+          "relationToFields": [],
+          "isList": true,
+          "isId": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false
+        }
+      ],
+      "uniqueConstraints": [
+        {
+          "name": "tenants_external_id_index",
+          "fields": [
+            "external_id"
           ],
           "nullNotDistinct": false
         }
@@ -7125,17 +7360,6 @@
         }
       ]
     },
-    "budget_type": {
-      "schemaName": "public",
-      "values": [
-        {
-          "name": "daily"
-        },
-        {
-          "name": "fixed"
-        }
-      ]
-    },
     "itinerary_status": {
       "schemaName": "public",
       "values": [
@@ -7162,17 +7386,14 @@
         }
       ]
     },
-    "schedule_intensity": {
+    "media_type": {
       "schemaName": "public",
       "values": [
         {
-          "name": "active"
+          "name": "image"
         },
         {
-          "name": "moderate"
-        },
-        {
-          "name": "relaxed"
+          "name": "video"
         }
       ]
     },
@@ -7180,7 +7401,7 @@
       "schemaName": "public",
       "values": [
         {
-          "name": "accomodation"
+          "name": "accommodation"
         },
         {
           "name": "activity"
@@ -7189,24 +7410,7 @@
           "name": "meal"
         },
         {
-          "name": "transporation"
-        }
-      ]
-    },
-    "schedule_length": {
-      "schemaName": "public",
-      "values": [
-        {
-          "name": "full_day"
-        },
-        {
-          "name": "half_day"
-        },
-        {
-          "name": "quarter_day"
-        },
-        {
-          "name": "whole_day"
+          "name": "transportation"
         }
       ]
     },
